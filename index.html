@@ -46,7 +46,7 @@
         /* Screenshot Capture Area */
         #reportCapture {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 25px;
             border-radius: 15px;
             width: 95%;
             max-width: 700px;
@@ -58,7 +58,7 @@
             position: absolute;
             top: 10px;
             right: 15px;
-            font-size: 0.75rem;
+            font-size: 0.8rem;
             font-weight: bold;
             background: linear-gradient(45deg, #f09, #0cf);
             -webkit-background-clip: text;
@@ -71,14 +71,14 @@
             font-size: 1.4rem;
             font-weight: 800;
             text-transform: uppercase;
-            margin: 10px 0 20px 0;
+            margin: 15px 0 25px 0;
             text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 10px;
+            margin-bottom: 20px;
         }
 
         th {
@@ -122,19 +122,18 @@
         .not-sub { background: var(--red); color: white; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
         .sub { background: var(--green); color: black; }
 
-        /* Flash News Message - Specific for Attendance Report */
-        .flash-news-box {
+        /* FIXED MESSAGE BOX BELOW TABLE */
+        .official-note {
             background: rgba(255, 77, 77, 0.1);
             border: 1px solid var(--red);
             border-radius: 8px;
-            padding: 8px;
-            margin-top: 15px;
-        }
-
-        .flash-news-box marquee {
+            padding: 15px;
+            margin-top: 10px;
+            text-align: center;
             color: var(--red);
             font-weight: bold;
-            font-size: 0.9rem;
+            font-size: 0.95rem;
+            line-height: 1.4;
             text-transform: uppercase;
         }
 
@@ -164,7 +163,6 @@
         }
         .btn-ss { background: #3f51b5; }
         .btn-wa { background: #128C7E; }
-        .action-btn:active { transform: scale(0.98); }
 
         .hidden { display: none; }
     </style>
@@ -205,8 +203,8 @@
                 </tfoot>
             </table>
             
-            <div class="flash-news-box">
-                <marquee scrollamount="5">⚡ ALERT: All class incharges/mentors are requested to do PCR for your respective section and update immediately! ⚡</marquee>
+            <div class="official-note">
+                ⚠️ NOTICE: All class incharges/mentors are requested to do PCR for your respective section and update report immediately!
             </div>
         </div>
 
@@ -225,7 +223,7 @@
     </div>
 
     <div class="btn-container">
-        <button class="action-btn btn-ss" onclick="takeScreenshot()">Capture Screenshot</button>
+        <button class="action-btn btn-ss" onclick="takeScreenshot()">Capture Report</button>
         <button class="action-btn btn-wa" onclick="shareWA()">WhatsApp Report</button>
     </div>
 
@@ -301,7 +299,6 @@
 
         function takeScreenshot() {
             const area = document.getElementById('reportCapture');
-            // Hide cursors and placeholders for the capture
             html2canvas(area, { backgroundColor: '#121218', scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `NA_Block_Report_${Date.now()}.png`;
@@ -325,7 +322,7 @@
                     msg += `${status === 'SUBMITTED' ? '✅' : '❌'} *${c.n}*: ${status}\n`;
                 });
             }
-            msg += `\n_Note: PCR Reporting is mandatory._\n\n*Designed by GNR*`;
+            msg += `\n\n*Designed by GNR*`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
