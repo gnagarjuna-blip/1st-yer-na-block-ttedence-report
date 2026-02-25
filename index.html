@@ -3,216 +3,236 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>3D Attendance Report - NA BLOCK</title>
+    <title>G.N.R Attendance System</title>
     <style>
         :root {
-            --bg-gradient: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            --glass: rgba(255, 255, 255, 0.05);
-            --gold-3d: linear-gradient(to bottom, #f1c40f, #d35400);
-            --text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            --bg-page: #0a0e14;
+            --table-base: #1e1e3f; /* Unique table color */
+            --gold: #ffd700;
+            --neon-blue: #00f2fe;
+            --high-perf: #2ecc71;  /* Green for >75% */
+            --mid-perf: #f39c12;   /* Orange for 60-75% */
+            --low-perf: #e74c3c;   /* Red for <60% */
         }
 
         body {
-            font-family: 'Arial', sans-serif;
-            background: var(--bg-gradient);
-            color: #fff;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-page);
+            color: white;
+            padding: 15px;
             margin: 0;
-            padding: 10px;
-            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .designer-tag {
+            align-self: flex-start;
+            font-size: 1.4rem;
             font-weight: 900;
-            font-size: 1.5rem;
-            background: linear-gradient(45deg, #00f2fe, #4facfe);
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 3px 3px 6px rgba(0,0,0,0.3);
-            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            margin-bottom: 20px;
         }
 
-        .report-card {
-            background: var(--glass);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255,255,255,0.1);
+        .container {
+            width: 100%;
+            max-width: 650px;
+            background: var(--table-base);
+            border: 2px solid rgba(255,255,255,0.1);
             border-radius: 15px;
-            padding: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            padding: 10px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
         }
 
         h2 {
             text-align: center;
-            font-size: 1.4rem;
-            background: var(--gold-3d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            filter: drop-shadow(2px 2px 2px #000);
-            margin-bottom: 20px;
-            text-transform: uppercase;
-        }
-
-        .table-container {
-            overflow-x: auto;
+            font-size: 1.2rem;
+            color: var(--gold);
+            text-shadow: 2px 2px #000;
+            letter-spacing: 1px;
+            margin: 10px 0;
         }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 0.85rem;
+            border-collapse: separate;
+            border-spacing: 0 5px;
         }
 
         th {
-            background: rgba(255,255,255,0.1);
-            color: #00f2fe;
-            padding: 10px;
-            text-shadow: var(--text-shadow);
+            color: var(--neon-blue);
+            font-size: 0.8rem;
+            padding: 10px 5px;
+            text-transform: uppercase;
+            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
         td {
-            padding: 10px;
-            border-bottom: 1px solid rgba(255,255,255,0.05);
+            padding: 10px 4px;
             text-align: center;
+            background: rgba(255,255,255,0.03);
+        }
+
+        /* 3D Color Font for Sections */
+        .section-name {
+            font-weight: bold;
+            color: #ff758c;
+            text-shadow: 1px 1px 0px #fff, 2px 2px 0px #000;
+            font-size: 0.9rem;
         }
 
         input {
-            background: rgba(0,0,0,0.3);
-            border: 1px solid #4facfe;
-            color: #fff;
-            padding: 5px;
+            background: #000;
+            border: 1px solid #444;
+            color: white;
+            padding: 6px;
             border-radius: 4px;
-            width: 50px;
             text-align: center;
         }
 
-        .mentor-input {
-            width: 120px;
-            font-size: 0.75rem;
-        }
+        .abs-in { width: 40px; border-color: var(--gold); }
+        .men-in { width: 120px; font-size: 0.7rem; color: #cfd8dc; }
 
-        .perc-bold {
-            color: #2ecc71;
+        /* Percentage Dynamic Styles */
+        .perc-cell {
             font-weight: bold;
+            font-size: 0.95rem;
             text-shadow: 1px 1px 2px #000;
         }
 
-        .whatsapp-btn {
-            display: block;
-            width: 100%;
-            background: linear-gradient(45deg, #25D366, #128C7E);
-            color: white;
-            border: none;
-            padding: 15px;
-            border-radius: 10px;
+        .total-row {
+            background: rgba(0, 242, 254, 0.15) !important;
             font-weight: bold;
-            font-size: 1.1rem;
-            margin-top: 20px;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.3);
         }
 
-        .total-row {
-            background: rgba(79, 172, 254, 0.2);
+        .wa-btn {
+            width: 100%;
+            padding: 15px;
+            margin-top: 15px;
+            background: linear-gradient(45deg, #25D366, #128C7E);
+            border: none;
+            border-radius: 10px;
+            color: white;
             font-weight: bold;
+            font-size: 1rem;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
+
+        .wa-btn:active { transform: translateY(2px); }
     </style>
 </head>
 <body>
 
     <div class="designer-tag">G.N.R</div>
 
-    <div class="report-card">
-        <h2 id="reportTitle">NA BLOCK ATTENDANCE REPORT</h2>
-        
-        <div class="table-container">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Sec</th>
-                        <th>Str</th>
-                        <th>Abs</th>
-                        <th>%</th>
-                        <th>Mentors (Editable)</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td>TOTAL</td>
-                        <td id="tStr">0</td>
-                        <td id="tAbs">0</td>
-                        <td id="tPerc">0%</td>
-                        <td>-</td>
-                    </tr>
-                </tfoot>
-            </table>
-        </div>
+    <div class="container">
+        <h2>NA BLOCK ATTENDANCE REPORT</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sec</th>
+                    <th>Str</th>
+                    <th>Abs</th>
+                    <th>%</th>
+                    <th>Mentors</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody"></tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td>TOTAL</td>
+                    <td id="tStr">0</td>
+                    <td id="tAbs">0</td>
+                    <td id="tPerc">0%</td>
+                    <td>-</td>
+                </tr>
+            </tfoot>
+        </table>
 
-        <button class="whatsapp-btn" onclick="shareWhatsApp()">
-            SEND TO WHATSAPP ➔
-        </button>
+        <button class="wa-btn" onclick="shareToWhatsApp()">EXPORT TO WHATSAPP</button>
     </div>
 
     <script>
-        const classData = [
-            { section: "CSE-C", strength: 60, mentors: "Mr.Yogesh/Ms.Anusuya" },
-            { section: "CSE-D", strength: 62, mentors: "Dr.Adrish/Mr.Govind rao" },
-            { section: "CSE-E", strength: 58, mentors: "Ms.Sukanya/Mr.Pradeep" },
-            { section: "CSM-A", strength: 63, mentors: "Ms.Shivani/Ms.K.Shivani" },
-            { section: "IT-A", strength: 49, mentors: "Ms.Alpana Singh/Mr.Sujith" },
-            { section: "ECE-A", strength: 69, mentors: "Ms.Sumayyah/Mr.Sainath" },
-            { section: "ECE-B", strength: 69, mentors: "Mr.Muzammil/Ms.Anusha" },
-            { section: "DS", strength: 62, mentors: "Dr.Subhasish/Ms.Jayanthi" }
+        const sections = [
+            { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
+            { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
+            { n: "CSE-E", s: 58, m: "Ms.Sukanya/Mr.Pradeep" },
+            { n: "CSM-A", s: 63, m: "Ms.Shivani/Ms.K.Shivani" },
+            { n: "IT-A", s: 49, m: "Ms.Alpana Singh/Mr.Sujith" },
+            { n: "ECE-A", s: 69, m: "Ms.Sumayyah/Mr.Sainath" },
+            { n: "ECE-B", s: 69, m: "Mr.Muzammil/Ms.Anusha" },
+            { n: "DS", s: 62, m: "Dr.Subhasish/Ms.Jayanthi" }
         ];
 
         function init() {
-            const body = document.getElementById('tableBody');
-            classData.forEach((item, i) => {
-                body.innerHTML += `
+            const tbody = document.getElementById('tableBody');
+            sections.forEach((item, i) => {
+                tbody.innerHTML += `
                     <tr>
-                        <td style="color:#4facfe; font-weight:bold;">${item.section}</td>
-                        <td>${item.strength}</td>
-                        <td><input type="number" class="abs-in" value="0" oninput="calc()"></td>
-                        <td class="perc-bold" id="p-${i}">100%</td>
-                        <td><input type="text" class="men-in" value="${item.mentors}"></td>
+                        <td class="section-name">${item.n}</td>
+                        <td>${item.s}</td>
+                        <td><input type="number" class="abs-in" placeholder="-" oninput="calculate()"></td>
+                        <td class="perc-cell" id="p-${i}">100%</td>
+                        <td><input type="text" class="men-in" value="${item.m}"></td>
                     </tr>
                 `;
             });
-            calc();
+            calculate();
         }
 
-        function calc() {
-            let absInputs = document.getElementsByClassName('abs-in');
+        function calculate() {
+            const absInputs = document.querySelectorAll('.abs-in');
+            const pCells = document.querySelectorAll('.perc-cell');
             let totalS = 0, totalA = 0;
 
-            classData.forEach((item, i) => {
+            sections.forEach((item, i) => {
                 let a = parseInt(absInputs[i].value) || 0;
-                let p = ((item.strength - a) / item.strength) * 100;
-                document.getElementById(`p-${i}`).innerText = p.toFixed(1) + '%';
-                totalS += item.strength;
+                let p = ((item.s - a) / item.s) * 100;
+                
+                // Set Color Logic
+                let color = 'var(--low-perf)'; // Default Red
+                if (p > 75) color = 'var(--high-perf)'; // Green
+                else if (p >= 60) color = 'var(--mid-perf)'; // Orange/Amber
+
+                pCells[i].innerText = p.toFixed(1) + '%';
+                pCells[i].style.color = color;
+
+                totalS += item.s;
                 totalA += a;
             });
 
             document.getElementById('tStr').innerText = totalS;
             document.getElementById('tAbs').innerText = totalA;
             let totalP = ((totalS - totalA) / totalS) * 100;
-            document.getElementById('tPerc').innerText = totalP.toFixed(2) + '%';
+            const tDisplay = document.getElementById('tPerc');
+            tDisplay.innerText = totalP.toFixed(2) + '%';
+            
+            // Total Percent Color
+            tDisplay.style.color = totalP > 75 ? 'var(--high-perf)' : (totalP >= 60 ? 'var(--mid-perf)' : 'var(--low-perf)');
         }
 
-        function shareWhatsApp() {
-            let date = new Date().toLocaleDateString();
-            let msg = `*NA BLOCK ATTENDANCE REPORT - ${date}*\n\n`;
+        function shareToWhatsApp() {
+            let msg = `*NA BLOCK ATTENDANCE REPORT*\n\n`;
+            msg += `*Sec | Str | Abs | %*\n`;
+            msg += `------------------------\n`;
             
-            let absInputs = document.getElementsByClassName('abs-in');
-            let menInputs = document.getElementsByClassName('men-in');
-            
-            classData.forEach((item, i) => {
-                let a = absInputs[i].value || 0;
+            const absIn = document.querySelectorAll('.abs-in');
+            const menIn = document.querySelectorAll('.men-in');
+
+            sections.forEach((item, i) => {
+                let a = absIn[i].value || 0;
                 let p = document.getElementById(`p-${i}`).innerText;
-                msg += `📍 *${item.section}* | Abs: ${a} | ${p}\n`;
+                msg += `📍 *${item.n}* | ${item.s} | ${a} | *${p}*\n`;
+                msg += `_Mentor: ${menIn[i].value}_\n\n`;
             });
 
-            msg += `\n📊 *TOTAL:* Str: ${document.getElementById('tStr').innerText} | Abs: ${document.getElementById('tAbs').innerText} | *${document.getElementById('tPerc').innerText}*\n\n`;
-            msg += `_All class incharges/mentors are requested to do PCR for your respective section._\n\n`;
+            msg += `------------------------\n`;
+            msg += `📊 *GRAND TOTAL:* ${document.getElementById('tStr').innerText} | ${document.getElementById('tAbs').innerText} | *${document.getElementById('tPerc').innerText}*\n\n`;
+            msg += `*Notice:* All class incharges/mentors are requested to do PCR for your respective section.\n\n`;
             msg += `*Designed by G.N.R*`;
 
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
