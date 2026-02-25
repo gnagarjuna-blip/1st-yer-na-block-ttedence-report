@@ -3,25 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.N.R - NA Block System</title>
+    <title>G.N.R - NA Block Reports</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg: #121212;
-            --card-bg: #1e1e2d;
-            --accent: #bb86fc;
-            --text-primary: #e0e0e0;
-            --success: #03dac6;
-            --warning: #ffb74d;
-            --danger: #cf6679;
+            --bg: #0d0d0d;
+            --card-bg: #161b22;
+            --accent: #7928ca; /* Deep Purple */
+            --accent-glow: #ff0080; /* Neon Pink */
+            --text: #f0f6fc;
+            --green: #00ff88;
+            --orange: #feb100;
+            --red: #ff4d4d;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background: var(--bg);
-            color: var(--text-primary);
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
             margin: 0;
-            padding: 15px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -29,110 +30,127 @@
 
         .designer-tag {
             align-self: flex-start;
-            font-weight: bold;
-            font-size: 1.2rem;
-            color: var(--accent);
-            letter-spacing: 1px;
-            margin-bottom: 10px;
+            font-weight: 900;
+            font-size: 1.4rem;
+            background: linear-gradient(90deg, #0070f3, #ff0080);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 10px 0;
         }
 
-        /* Dropdown/Switcher Style */
-        .mode-selector {
-            width: 100%;
-            max-width: 600px;
-            padding: 12px;
+        /* Selection Dropdown */
+        .selector {
+            width: 95%;
+            max-width: 650px;
             background: var(--card-bg);
-            border: 1px solid var(--accent);
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 20px;
+            color: var(--text);
+            padding: 12px;
+            border: 2px solid var(--accent);
+            border-radius: 10px;
+            margin-bottom: 15px;
             font-size: 1rem;
-            outline: none;
+            font-weight: bold;
         }
 
-        #reportContainer {
+        /* Report Capture Area */
+        #captureArea {
             background: var(--card-bg);
             padding: 20px;
-            border-radius: 12px;
-            width: 100%;
+            border-radius: 15px;
+            width: 95%;
             max-width: 700px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #30363d;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.8);
         }
 
         h2 {
             text-align: center;
-            color: var(--accent);
-            text-transform: uppercase;
-            font-size: 1.2rem;
-            margin-bottom: 20px;
+            background: linear-gradient(180deg, #fff, #888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
         }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
         th {
-            background: rgba(187, 134, 252, 0.1);
-            color: var(--accent);
+            background: rgba(121, 40, 202, 0.2);
+            color: var(--accent-glow);
             padding: 12px 5px;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             border-bottom: 2px solid var(--accent);
         }
 
         td {
-            padding: 10px 5px;
+            padding: 10px 4px;
             text-align: center;
-            border-bottom: 1px solid #333;
-            font-size: 0.9rem;
+            border-bottom: 1px solid #21262d;
+            font-size: 0.85rem;
         }
 
-        /* Pleasant Colorful Row Styles */
-        .sec-col { font-weight: bold; color: #81d4fa; }
-        .men-col { color: #ce93d8; font-size: 0.8rem; }
+        /* Colorful Columns */
+        .sec-col { font-weight: bold; color: #00d2ff; text-shadow: 1px 1px 2px #000; }
+        .men-col { color: #d1d1d1; font-style: italic; font-size: 0.75rem; }
 
-        input[type="number"], input[type="text"] {
-            background: #2c2c3e;
-            border: 1px solid #444;
-            color: white;
+        input[type="number"] {
+            width: 40px;
+            background: #000;
+            border: 1px solid var(--accent);
+            color: #fff;
             padding: 5px;
             border-radius: 4px;
-            text-align: center;
         }
 
-        .abs-input { width: 45px; }
-        
-        /* Checkbox Style */
-        .pcr-check { transform: scale(1.3); cursor: pointer; }
-
-        /* Flash News / Marquee Style */
-        .flash-news {
-            background: #311b92;
+        /* PCR Highlight System */
+        .status-cell {
+            padding: 5px;
+            border-radius: 4px;
+            font-weight: bold;
+            display: inline-block;
+            width: 90%;
+        }
+        .not-submitted {
+            background: var(--red);
             color: #fff;
-            padding: 8px;
-            overflow: hidden;
-            white-space: nowrap;
-            border-radius: 5px;
-            margin-top: 15px;
-            border-left: 5px solid var(--warning);
+            box-shadow: 0 0 10px var(--red);
+        }
+        .submitted {
+            background: var(--green);
+            color: #000;
         }
 
-        .flash-news marquee {
+        /* Flash News Internal */
+        .flash-box {
+            background: linear-gradient(90deg, #4b1248, #f03);
+            color: white;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 15px;
+            border: 1px solid #ff0080;
+        }
+
+        .flash-box marquee {
             font-weight: bold;
             font-size: 0.9rem;
+            text-shadow: 1px 1px 2px #000;
         }
 
         .total-row {
-            background: rgba(3, 218, 198, 0.05);
-            font-weight: bold;
-            color: var(--success);
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--green);
+            font-weight: 900;
         }
 
-        .btn-box {
+        /* Buttons */
+        .btn-row {
             display: flex;
             gap: 10px;
-            width: 100%;
+            width: 95%;
             max-width: 700px;
             margin-top: 20px;
         }
@@ -141,15 +159,13 @@
             flex: 1;
             padding: 15px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
-            color: white;
+            transition: 0.3s;
         }
-
-        .dl-btn { background: #6200ee; }
-        .wa-btn { background: #25D366; }
-
+        .btn-img { background: #0070f3; color: white; }
+        .btn-wa { background: #25d366; color: white; }
         .hidden { display: none; }
     </style>
 </head>
@@ -157,31 +173,32 @@
 
     <div class="designer-tag">G.N.R</div>
 
-    <select class="mode-selector" id="viewMode" onchange="toggleView()">
-        <option value="attendance">View: Attendance Report</option>
-        <option value="pcr">View: PCR Report Status</option>
+    <select class="selector" id="modeSelect" onchange="switchMode()">
+        <option value="att">📋 ATTENDANCE REPORT</option>
+        <option value="pcr">📑 PCR REPORT STATUS</option>
     </select>
 
-    <div id="reportContainer">
-        <h2 id="titleHeader">NA BLOCK ATTENDANCE REPORT</h2>
-        
-        <div id="attendanceView">
+    <div id="captureArea">
+        <h2 id="title">NA BLOCK ATTENDANCE REPORT</h2>
+
+        <div id="attView">
             <table>
                 <thead>
                     <tr>
-                        <th>SECTION</th>
+                        <th>SEC</th>
                         <th>STR</th>
                         <th>ABS</th>
-                        <th>PERC %</th>
+                        <th>%</th>
+                        <th>MENTORS</th>
                     </tr>
                 </thead>
                 <tbody id="attBody"></tbody>
                 <tfoot>
                     <tr class="total-row">
-                        <td>TOTAL</td>
-                        <td id="totStr">492</td>
-                        <td id="totAbs">0</td>
-                        <td id="totPerc">100%</td>
+                        <td colspan="2">TOTAL</td>
+                        <td id="tAbs">0</td>
+                        <td id="tPerc">100%</td>
+                        <td>-</td>
                     </tr>
                 </tfoot>
             </table>
@@ -191,61 +208,58 @@
             <table>
                 <thead>
                     <tr>
-                        <th>SECTION</th>
+                        <th>SEC</th>
                         <th>MENTOR NAME</th>
-                        <th>PCR STATUS</th>
+                        <th>SUBMISSION STATUS</th>
                     </tr>
                 </thead>
                 <tbody id="pcrBody"></tbody>
             </table>
         </div>
 
-        <div class="flash-news">
-            <marquee behavior="scroll" direction="left">
-                📢 FLASH NEWS: All class incharges and mentors are strictly requested to complete the PCR for your respective sections immediately!
-            </marquee>
+        <div class="flash-box">
+            <marquee>⚡ PCR REPORTING: All Mentors are requested to verify the PCR data and report the absentees for the respective sections immediately! ⚡</marquee>
         </div>
     </div>
 
-    <div class="btn-box">
-        <button class="btn dl-btn" onclick="takeScreenshot()">Download Report Image</button>
-        <button class="btn wa-btn" onclick="whatsappText()">Share via WhatsApp</button>
+    <div class="btn-row">
+        <button class="btn btn-img" onclick="saveImage()">Download Image</button>
+        <button class="btn btn-wa" onclick="shareWA()">WhatsApp Report</button>
     </div>
 
     <script>
-        const sections = [
-            { name: "CSE-C", str: 60, mentor: "Mr.Yogesh/Ms.Anusuya" },
-            { name: "CSE-D", str: 62, mentor: "Dr.Adrish/Mr.Govind rao" },
-            { name: "CSE-E", str: 58, mentor: "Ms.Sukanya/Mr.Pradeep" },
-            { name: "CSM-A", str: 63, mentor: "Ms.Shivani/Ms.K.Shivani" },
-            { name: "IT-A", str: 49, mentor: "Ms.Alpana Singh/Mr.Sujith" },
-            { name: "ECE-A", str: 69, mentor: "Ms.Sumayyah/Mr.Sainath" },
-            { name: "ECE-B", str: 69, mentor: "Mr.Muzammil/Ms.Anusha" },
-            { name: "DS", str: 62, mentor: "Dr.Subhasish/Ms.Jayanthi" }
+        // Data from
+        const classData = [
+            { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
+            { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
+            { n: "CSE-E", s: 58, m: "Ms.Sukanya/Mr.Pradeep" },
+            { n: "CSM-A", s: 63, m: "Ms.Shivani/Ms.K.Shivani" },
+            { n: "IT-A", s: 49, m: "Ms.Alpana Singh/Mr.Sujith" },
+            { n: "ECE-A", s: 69, m: "Ms.Sumayyah/Mr.Sainath" },
+            { n: "ECE-B", s: 69, m: "Mr.Muzammil/Ms.Anusha" },
+            { n: "DS", s: 62, m: "Dr.Subhasish/Ms.Jayanthi" }
         ];
 
-        function load() {
-            const attB = document.getElementById('attBody');
-            const pcrB = document.getElementById('pcrBody');
-            
-            sections.forEach((s, i) => {
-                // Fill Attendance
-                attB.innerHTML += `
+        function init() {
+            const ab = document.getElementById('attBody');
+            const pb = document.getElementById('pcrBody');
+
+            classData.forEach((c, i) => {
+                ab.innerHTML += `
                     <tr>
-                        <td class="sec-col">${s.name}</td>
-                        <td>${s.str}</td>
-                        <td><input type="number" class="abs-in" placeholder="-" oninput="calc()"></td>
+                        <td class="sec-col">${c.n}</td>
+                        <td>${c.s}</td>
+                        <td><input type="number" class="ab-in" placeholder="-" oninput="calc()"></td>
                         <td id="p-${i}" style="font-weight:bold;">100%</td>
+                        <td class="men-col">${c.m}</td>
                     </tr>
                 `;
-                // Fill PCR
-                pcrB.innerHTML += `
+                pb.innerHTML += `
                     <tr>
-                        <td class="sec-col">${s.name}</td>
-                        <td class="men-col">${s.mentor}</td>
-                        <td>
-                            <input type="checkbox" class="pcr-check">
-                            <span style="font-size:0.7rem; margin-left:5px;">Submitted</span>
+                        <td class="sec-col">${c.n}</td>
+                        <td class="men-col">${c.m}</td>
+                        <td onclick="togglePCR(${i})" style="cursor:pointer">
+                            <span id="st-${i}" class="status-cell not-submitted">NOT SUBMITTED</span>
                         </td>
                     </tr>
                 `;
@@ -253,62 +267,69 @@
             calc();
         }
 
-        function toggleView() {
-            const mode = document.getElementById('viewMode').value;
-            const isAtt = mode === 'attendance';
-            document.getElementById('attendanceView').classList.toggle('hidden', !isAtt);
+        function switchMode() {
+            const mode = document.getElementById('modeSelect').value;
+            const isAtt = mode === 'att';
+            document.getElementById('attView').classList.toggle('hidden', !isAtt);
             document.getElementById('pcrView').classList.toggle('hidden', isAtt);
-            document.getElementById('titleHeader').innerText = isAtt ? "NA BLOCK ATTENDANCE REPORT" : "NA BLOCK PCR STATUS REPORT";
+            document.getElementById('title').innerText = isAtt ? "NA BLOCK ATTENDANCE REPORT" : "NA BLOCK PCR STATUS REPORT";
+        }
+
+        function togglePCR(i) {
+            const el = document.getElementById(`st-${i}`);
+            if(el.classList.contains('not-submitted')) {
+                el.classList.replace('not-submitted', 'submitted');
+                el.innerText = "SUBMITTED";
+            } else {
+                el.classList.replace('submitted', 'not-submitted');
+                el.innerText = "NOT SUBMITTED";
+            }
         }
 
         function calc() {
-            const inputs = document.querySelectorAll('.abs-in');
+            const inputs = document.querySelectorAll('.ab-in');
             let tS = 0, tA = 0;
-            sections.forEach((s, i) => {
+            classData.forEach((c, i) => {
                 let a = parseInt(inputs[i].value) || 0;
-                let p = ((s.str - a) / s.str) * 100;
-                let el = document.getElementById(`p-${i}`);
-                el.innerText = p.toFixed(1) + "%";
-                el.style.color = p > 75 ? "var(--success)" : (p >= 60 ? "var(--warning)" : "var(--danger)");
-                tS += s.str;
-                tA += a;
+                let p = ((c.s - a) / c.s) * 100;
+                let pEl = document.getElementById(`p-${i}`);
+                pEl.innerText = p.toFixed(1) + "%";
+                pEl.style.color = p > 75 ? "var(--green)" : (p >= 60 ? "var(--orange)" : "var(--red)");
+                tS += c.s; tA += a;
             });
-            document.getElementById('totAbs').innerText = tA;
-            let tP = ((tS - tA) / tS) * 100;
-            document.getElementById('totPerc').innerText = tP.toFixed(2) + "%";
+            document.getElementById('tAbs').innerText = tA;
+            document.getElementById('tPerc').innerText = (((tS - tA) / tS) * 100).toFixed(2) + "%";
         }
 
-        function takeScreenshot() {
-            html2canvas(document.getElementById('reportContainer'), { backgroundColor: '#121212' }).then(canvas => {
+        function saveImage() {
+            html2canvas(document.getElementById('captureArea'), { backgroundColor: '#0d0d0d' }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'NA_Block_Status.png';
+                link.download = `Report_${Date.now()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
         }
 
-        function whatsappText() {
-            const mode = document.getElementById('viewMode').value;
-            let text = `*NA BLOCK ${mode.toUpperCase()} REPORT*\n\n`;
-            
-            if(mode === 'attendance') {
-                const inputs = document.querySelectorAll('.abs-in');
-                sections.forEach((s, i) => {
-                    text += `📍 *${s.name}* | Abs: ${inputs[i].value || 0} | ${document.getElementById(`p-${i}`).innerText}\n`;
+        function shareWA() {
+            const mode = document.getElementById('modeSelect').value;
+            let msg = `*NA BLOCK ${mode === 'att' ? 'ATTENDANCE' : 'PCR'} REPORT*\n\n`;
+            if(mode === 'att') {
+                const inputs = document.querySelectorAll('.ab-in');
+                classData.forEach((c, i) => {
+                    msg += `📍 *${c.n}* | Abs: ${inputs[i].value || 0} | ${document.getElementById(`p-${i}`).innerText}\n`;
                 });
-                text += `\n📊 *Total Perc:* ${document.getElementById('totPerc').innerText}`;
+                msg += `\n📊 *Total Perc:* ${document.getElementById('tPerc').innerText}`;
             } else {
-                const checks = document.querySelectorAll('.pcr-check');
-                sections.forEach((s, i) => {
-                    text += `${checks[i].checked ? '✅' : '❌'} *${s.name}* (${s.mentor})\n`;
+                classData.forEach((c, i) => {
+                    const status = document.getElementById(`st-${i}`).innerText;
+                    msg += `${status === 'SUBMITTED' ? '✅' : '❌'} *${c.n}*: ${status}\n`;
                 });
             }
-
-            text += `\n\n_All class incharges/mentors are requested to do PCR._\n\n*Designed by G.N.R*`;
-            window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+            msg += `\n\n_All mentors are requested to do PCR._\n*Designed by G.N.R*`;
+            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        load();
+        init();
     </script>
 </body>
 </html>
