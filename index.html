@@ -9,12 +9,11 @@
         :root {
             --bg: #0a0a0c;
             --card-bg: #121218;
-            --blue-header: #007bff;
-            --accent: #7928ca;
+            --blue-header: #00d2ff;
             --text: #ffffff;
             --green: #2ecc71;
             --orange: #f39c12;
-            --red: #e74c3c;
+            --red: #ff4d4d;
         }
 
         body {
@@ -28,7 +27,6 @@
             align-items: center;
         }
 
-        /* Controls outside the screenshot */
         .controls {
             width: 95%;
             max-width: 700px;
@@ -40,7 +38,7 @@
             background: #1c1c21;
             color: white;
             padding: 12px;
-            border: 1px solid var(--blue-header);
+            border: 2px solid var(--blue-header);
             border-radius: 8px;
             font-weight: bold;
         }
@@ -54,99 +52,101 @@
             max-width: 700px;
             border: 1px solid #2a2a35;
             position: relative;
-            overflow: hidden;
-        }
-
-        .header-title {
-            text-align: center;
-            color: var(--blue-header);
-            font-size: 1.5rem;
-            font-weight: 800;
-            text-transform: uppercase;
-            margin: 10px 0;
-            text-shadow: 0 0 10px rgba(0,123,255,0.3);
         }
 
         .gnr-brand {
             position: absolute;
-            top: 5px;
-            right: 10px;
-            font-size: 0.7rem;
+            top: 10px;
+            right: 15px;
+            font-size: 0.75rem;
             font-weight: bold;
             background: linear-gradient(45deg, #f09, #0cf);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
+        .header-title {
+            text-align: center;
+            color: var(--blue-header);
+            font-size: 1.4rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin: 10px 0 20px 0;
+            text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
-            margin: 15px 0;
+            margin-bottom: 10px;
         }
 
         th {
-            background: rgba(0, 123, 255, 0.1);
-            color: #00d2ff;
+            background: rgba(0, 210, 255, 0.15);
+            color: var(--blue-header);
             padding: 12px 5px;
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             border-bottom: 2px solid var(--blue-header);
         }
 
         td {
-            padding: 10px 4px;
+            padding: 12px 4px;
             text-align: center;
             border-bottom: 1px solid #21262d;
-            font-size: 0.8rem;
+            font-size: 0.85rem;
         }
 
         .sec-col { font-weight: bold; color: #fff; }
-        .men-col { color: #aaa; font-size: 0.7rem; font-style: italic; }
+        .men-col { color: #b0b0b0; font-size: 0.75rem; font-style: italic; }
 
         input[type="number"] {
-            width: 40px;
+            width: 45px;
             background: #000;
-            border: 1px solid #444;
+            border: 1px solid #333;
             color: #fff;
-            padding: 4px;
+            padding: 5px;
             border-radius: 4px;
+            outline: none;
         }
 
-        /* PCR Status Highlights */
+        /* PCR Highlights */
         .status-badge {
-            padding: 6px;
-            border-radius: 4px;
+            padding: 8px;
+            border-radius: 5px;
             font-weight: bold;
             display: block;
             width: 90%;
             margin: auto;
+            cursor: pointer;
         }
-        .not-sub { background: var(--red); color: white; box-shadow: 0 0 12px var(--red); }
+        .not-sub { background: var(--red); color: white; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
         .sub { background: var(--green); color: black; }
 
-        /* Flash News Internal */
+        /* Flash News Message - Specific for Attendance Report */
         .flash-news-box {
-            background: #210000;
-            border: 1px solid #ff4d4d;
-            border-radius: 6px;
-            padding: 10px;
-            margin-top: 10px;
+            background: rgba(255, 77, 77, 0.1);
+            border: 1px solid var(--red);
+            border-radius: 8px;
+            padding: 8px;
+            margin-top: 15px;
         }
 
         .flash-news-box marquee {
-            color: #ff4d4d;
+            color: var(--red);
             font-weight: bold;
-            font-size: 0.85rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
         }
 
         .total-row {
             background: rgba(46, 204, 113, 0.1);
             color: var(--green);
-            font-weight: bold;
+            font-weight: 900;
         }
 
         .btn-container {
             display: flex;
-            gap: 10px;
+            gap: 12px;
             width: 95%;
             max-width: 700px;
             margin-top: 20px;
@@ -156,13 +156,15 @@
             flex: 1;
             padding: 15px;
             border: none;
-            border-radius: 8px;
+            border-radius: 10px;
             font-weight: bold;
             cursor: pointer;
             color: white;
+            transition: 0.3s ease;
         }
-        .btn-ss { background: #5865f2; }
-        .btn-wa { background: #25d366; }
+        .btn-ss { background: #3f51b5; }
+        .btn-wa { background: #128C7E; }
+        .action-btn:active { transform: scale(0.98); }
 
         .hidden { display: none; }
     </style>
@@ -171,8 +173,8 @@
 
     <div class="controls">
         <select class="selector" id="mode" onchange="toggleView()">
-            <option value="attendance">📋 ATTENDANCE REPORT MODE</option>
-            <option value="pcr">📑 PCR STATUS MODE</option>
+            <option value="attendance">📋 ATTENDANCE REPORT VIEW</option>
+            <option value="pcr">📑 PCR SUBMISSION STATUS VIEW</option>
         </select>
     </div>
 
@@ -202,6 +204,10 @@
                     </tr>
                 </tfoot>
             </table>
+            
+            <div class="flash-news-box">
+                <marquee scrollamount="5">⚡ ALERT: All class incharges/mentors are requested to do PCR for your respective section and update immediately! ⚡</marquee>
+            </div>
         </div>
 
         <div id="pcrArea" class="hidden">
@@ -210,15 +216,11 @@
                     <tr>
                         <th>SECTION</th>
                         <th>MENTOR NAME</th>
-                        <th>SUBMISSION STATUS</th>
+                        <th>PCR STATUS</th>
                     </tr>
                 </thead>
                 <tbody id="pcrBody"></tbody>
             </table>
-        </div>
-
-        <div class="flash-news-box">
-            <marquee scrollamount="4">⚡ FLASH NEWS: All class incharges/mentors are requested to do PCR for your respective section and update immediately! ⚡</marquee>
         </div>
     </div>
 
@@ -299,9 +301,10 @@
 
         function takeScreenshot() {
             const area = document.getElementById('reportCapture');
+            // Hide cursors and placeholders for the capture
             html2canvas(area, { backgroundColor: '#121218', scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = 'NA_Block_1stYear_Report.png';
+                link.download = `NA_Block_Report_${Date.now()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
