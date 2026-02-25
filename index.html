@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Report - NA BLOCK</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --header-bg: #f8f9fa;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #eef2f3;
+            margin: 0;
+            padding: 20px;
+        }
+
+        /* Top Left Designer Tag */
+        .designer-tag {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-weight: bold;
+            font-size: 1.2rem;
+            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            border: 1px solid #ddd;
+            padding: 5px 15px;
+            border-radius: 20px;
+            background-color: white;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            text-transform: uppercase;
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px;
+            text-align: center;
+        }
+
+        td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        tr:nth-child(even) { background-color: #f2f2f2; }
+
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .percentage-cell {
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .total-row {
+            background-color: #dfe6e9 !important;
+            font-weight: bold;
+        }
+
+        .upload-btn {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="designer-tag">Designed by G.N.R</div>
+
+    <div class="container">
+        <h2>Class wise Attendance Report - NA BLOCK</h2>
+
+        <div class="controls">
+            <div>
+                <strong>Date:</strong> <span id="currentDate"></span>
+            </div>
+            <div>
+                <label>Upload Report Image: </label>
+                <input type="file" id="imageUpload" accept="image/*" class="upload-btn">
+            </div>
+        </div>
+
+        <table id="attendanceTable">
+            <thead>
+                <tr>
+                    <th>S.No</th>
+                    <th>Sections</th>
+                    <th>Strength</th>
+                    <th>Absentees</th>
+                    <th>Percentage (%)</th>
+                    <th>Mentors</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                </tbody>
+            <tfoot>
+                <tr class="total-row">
+                    <td colspan="2">TOTAL</td>
+                    <td id="totalStrength">0</td>
+                    <td id="totalAbsentees">0</td>
+                    <td id="totalPercentage">0%</td>
+                    <td>-</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+
+    <script>
+        // Fixed Data based on your image
+        const classData = [
+            { sn: 1, section: "CSE-C", strength: 60, mentors: "Mr.Yogesh / Ms.Anusuya" },
+            { sn: 2, section: "CSE-D", strength: 62, mentors: "Dr.Adrish / Mr.Govind rao" },
+            { sn: 3, section: "CSE-E", strength: 58, mentors: "Ms. Sukanya / Mr.Pradeep" },
+            { sn: 4, section: "CSM-A", strength: 63, mentors: "Ms. Shivani / Ms.K. Shivani" },
+            { sn: 5, section: "IT-A", strength: 49, mentors: "Ms. Alpana Singh / Mr.Sujith" },
+            { sn: 6, section: "ECE-A", strength: 69, mentors: "Ms. Sumayyah / Mr.Sainath" },
+            { sn: 7, section: "ECE-B", strength: 69, mentors: "Mr.Muzammil / Ms.Anusha" },
+            { sn: 8, section: "DS", strength: 62, mentors: "Dr.Subhasish / Ms.Jayanthi" }
+        ];
+
+        const tableBody = document.getElementById('tableBody');
+        document.getElementById('currentDate').innerText = new Date().toLocaleDateString('en-GB');
+
+        function initTable() {
+            classData.forEach((item, index) => {
+                let row = `
+                    <tr>
+                        <td>${item.sn}</td>
+                        <td>${item.section}</td>
+                        <td>${item.strength}</td>
+                        <td>
+                            <input type="number" class="absent-input" value="0" min="0" max="${item.strength}" 
+                            oninput="calculateAttendance()" data-index="${index}">
+                        </td>
+                        <td class="percentage-cell" id="perc-${index}">100%</td>
+                        <td style="font-size: 0.9em; color: #555;">${item.mentors}</td>
+                    </tr>
+                `;
+                tableBody.innerHTML += row;
+            });
+            calculateAttendance();
+        }
+
+        function calculateAttendance() {
+            let inputs = document.querySelectorAll('.absent-input');
+            let totalS = 0;
+            let totalA = 0;
+
+            inputs.forEach((input, idx) => {
+                let strength = classData[idx].strength;
+                let absentees = parseInt(input.value) || 0;
+                
+                // Logic to prevent absentees > strength
+                if(absentees > strength) {
+                    absentees = strength;
+                    input.value = strength;
+                }
+
+                let perc = ((strength - absentees) / strength) * 100;
+                document.getElementById(`perc-${idx}`).innerText = perc.toFixed(2) + '%';
+
+                totalS += strength;
+                totalA += absentees;
+            });
+
+            let totalPerc = ((totalS - totalA) / totalS) * 100;
+            
+            document.getElementById('totalStrength').innerText = totalS;
+            document.getElementById('totalAbsentees').innerText = totalA;
+            document.getElementById('totalPercentage').innerText = totalPerc.toFixed(2) + '%';
+        }
+
+        // Placeholder for Image Upload Logic
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            alert("Image uploaded! In a production environment, this would trigger an OCR scan to automatically fill the absentees. For now, please enter them manually.");
+        });
+
+        initTable();
+    </script>
+</body>
+</html>
