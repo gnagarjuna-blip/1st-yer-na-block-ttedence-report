@@ -3,142 +3,145 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.N.R Attendance System</title>
+    <title>G.N.R - 3D Attendance System</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg-page: #0a0e14;
-            --table-base: #1e1e3f; /* Unique table color */
-            --gold: #ffd700;
-            --neon-blue: #00f2fe;
-            --high-perf: #2ecc71;  /* Green for >75% */
-            --mid-perf: #f39c12;   /* Orange for 60-75% */
-            --low-perf: #e74c3c;   /* Red for <60% */
+            --bg: #050505;
+            --panel: #1a1a2e;
+            --3d-text: linear-gradient(180deg, #fff 0%, #aaa 100%);
+            --gold: #f1c40f;
+            --green: #2ecc71;
+            --orange: #e67e22;
+            --red: #e74c3c;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-page);
+            font-family: 'Arial Black', sans-serif;
+            background: var(--bg);
             color: white;
-            padding: 15px;
-            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
+            padding: 20px;
         }
 
         .designer-tag {
             align-self: flex-start;
-            font-size: 1.4rem;
-            font-weight: 900;
-            background: linear-gradient(45deg, #ff00cc, #3333ff);
+            font-size: 1.8rem;
+            background: linear-gradient(to right, #00dbde, #fc00ff);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
-            margin-bottom: 20px;
+            filter: drop-shadow(2px 2px 5px rgba(0,219,222,0.5));
+            margin-bottom: 15px;
         }
 
-        .container {
-            width: 100%;
-            max-width: 650px;
-            background: var(--table-base);
-            border: 2px solid rgba(255,255,255,0.1);
+        /* The Report Container to be Captured as Image */
+        #reportCapture {
+            background: var(--panel);
+            padding: 25px;
             border-radius: 15px;
-            padding: 10px;
-            box-shadow: 0 15px 35px rgba(0,0,0,0.7);
+            border: 4px solid #303050;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.8);
+            width: 100%;
+            max-width: 700px;
         }
 
         h2 {
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             color: var(--gold);
-            text-shadow: 2px 2px #000;
-            letter-spacing: 1px;
-            margin: 10px 0;
+            text-shadow: 3px 3px 0px #000, 5px 5px 0px rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            margin-top: 0;
         }
 
         table {
             width: 100%;
-            border-collapse: separate;
-            border-spacing: 0 5px;
+            border-collapse: collapse;
+            background: #11112b;
         }
 
         th {
-            color: var(--neon-blue);
+            background: #252545;
+            color: #00d2ff;
+            padding: 15px 5px;
+            border: 1px solid #333;
             font-size: 0.8rem;
-            padding: 10px 5px;
-            text-transform: uppercase;
-            border-bottom: 1px solid rgba(255,255,255,0.2);
         }
 
         td {
-            padding: 10px 4px;
+            border: 1px solid #333;
+            padding: 10px 5px;
             text-align: center;
-            background: rgba(255,255,255,0.03);
+            font-size: 0.85rem;
         }
 
-        /* 3D Color Font for Sections */
-        .section-name {
-            font-weight: bold;
-            color: #ff758c;
+        /* 3D Animated Font Fill for Sections */
+        .sec-3d {
+            font-weight: 900;
+            color: #ff0080;
             text-shadow: 1px 1px 0px #fff, 2px 2px 0px #000;
-            font-size: 0.9rem;
+            animation: glow 2s infinite alternate;
+        }
+
+        @keyframes glow {
+            from { filter: drop-shadow(0 0 2px #ff0080); }
+            to { filter: drop-shadow(0 0 8px #ff0080); }
         }
 
         input {
             background: #000;
             border: 1px solid #444;
-            color: white;
-            padding: 6px;
-            border-radius: 4px;
+            color: #fff;
             text-align: center;
+            padding: 5px;
+            border-radius: 4px;
         }
 
-        .abs-in { width: 40px; border-color: var(--gold); }
-        .men-in { width: 120px; font-size: 0.7rem; color: #cfd8dc; }
+        .abs-input { width: 45px; font-weight: bold; font-size: 1.1rem; }
+        .men-input { width: 140px; font-size: 0.7rem; color: #888; border: none; background: transparent; }
 
-        /* Percentage Dynamic Styles */
-        .perc-cell {
-            font-weight: bold;
-            font-size: 0.95rem;
-            text-shadow: 1px 1px 2px #000;
-        }
+        .perc-bold { font-weight: bold; font-size: 1rem; }
 
-        .total-row {
-            background: rgba(0, 242, 254, 0.15) !important;
-            font-weight: bold;
-        }
+        .total-row { background: #252545; font-weight: bold; color: var(--gold); }
 
-        .wa-btn {
+        .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
             width: 100%;
+            max-width: 700px;
+            margin-top: 20px;
+        }
+
+        button {
             padding: 15px;
-            margin-top: 15px;
-            background: linear-gradient(45deg, #25D366, #128C7E);
             border: none;
             border-radius: 10px;
-            color: white;
             font-weight: bold;
-            font-size: 1rem;
             cursor: pointer;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            text-transform: uppercase;
         }
 
-        .wa-btn:active { transform: translateY(2px); }
+        .download-btn { background: #6c5ce7; color: white; }
+        .wa-btn { background: #25D366; color: white; }
     </style>
 </head>
 <body>
 
     <div class="designer-tag">G.N.R</div>
 
-    <div class="container">
+    <div id="reportCapture">
         <h2>NA BLOCK ATTENDANCE REPORT</h2>
         <table>
             <thead>
                 <tr>
-                    <th>Sec</th>
-                    <th>Str</th>
-                    <th>Abs</th>
+                    <th>SECTION</th>
+                    <th>STR</th>
+                    <th>ABS</th>
                     <th>%</th>
-                    <th>Mentors</th>
+                    <th>MENTOR NAMES</th>
                 </tr>
             </thead>
             <tbody id="tableBody"></tbody>
@@ -152,89 +155,91 @@
                 </tr>
             </tfoot>
         </table>
+        <p style="font-size: 0.7rem; color: #aaa; margin-top: 15px; text-align: center;">
+            * All class incharges/mentors are requested to do PCR for your respective section.
+        </p>
+    </div>
 
-        <button class="wa-btn" onclick="shareToWhatsApp()">EXPORT TO WHATSAPP</button>
+    <div class="btn-group">
+        <button class="download-btn" onclick="downloadImage()">Download Table Image</button>
+        <button class="wa-btn" onclick="sendWhatsApp()">Send WhatsApp Text</button>
     </div>
 
     <script>
-        const sections = [
-            { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
-            { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
-            { n: "CSE-E", s: 58, m: "Ms.Sukanya/Mr.Pradeep" },
-            { n: "CSM-A", s: 63, m: "Ms.Shivani/Ms.K.Shivani" },
-            { n: "IT-A", s: 49, m: "Ms.Alpana Singh/Mr.Sujith" },
-            { n: "ECE-A", s: 69, m: "Ms.Sumayyah/Mr.Sainath" },
-            { n: "ECE-B", s: 69, m: "Mr.Muzammil/Ms.Anusha" },
-            { n: "DS", s: 62, m: "Dr.Subhasish/Ms.Jayanthi" }
+        const data = [
+            { s: "CSE-C", st: 60, m: "Mr.Yogesh/Ms.Anusuya" },
+            { s: "CSE-D", st: 62, m: "Dr.Adrish/Mr.Govind rao" },
+            { s: "CSE-E", st: 58, m: "Ms.Sukanya/Mr.Pradeep" },
+            { s: "CSM-A", st: 63, m: "Ms.Shivani/Ms.K.Shivani" },
+            { s: "IT-A", st: 49, m: "Ms.Alpana Singh/Mr.Sujith" },
+            { s: "ECE-A", st: 69, m: "Ms.Sumayyah/Mr.Sainath" },
+            { s: "ECE-B", st: 69, m: "Mr.Muzammil/Ms.Anusha" },
+            { s: "DS", st: 62, m: "Dr.Subhasish/Ms.Jayanthi" }
         ];
 
         function init() {
             const tbody = document.getElementById('tableBody');
-            sections.forEach((item, i) => {
+            data.forEach((item, i) => {
                 tbody.innerHTML += `
                     <tr>
-                        <td class="section-name">${item.n}</td>
-                        <td>${item.s}</td>
-                        <td><input type="number" class="abs-in" placeholder="-" oninput="calculate()"></td>
-                        <td class="perc-cell" id="p-${i}">100%</td>
-                        <td><input type="text" class="men-in" value="${item.m}"></td>
+                        <td class="sec-3d">${item.s}</td>
+                        <td>${item.st}</td>
+                        <td><input type="number" class="abs-input" oninput="update()"></td>
+                        <td class="perc-bold" id="p-${i}">100%</td>
+                        <td><input type="text" class="men-input" value="${item.m}"></td>
                     </tr>
                 `;
             });
-            calculate();
+            update();
         }
 
-        function calculate() {
-            const absInputs = document.querySelectorAll('.abs-in');
-            const pCells = document.querySelectorAll('.perc-cell');
+        function update() {
+            const absInputs = document.querySelectorAll('.abs-input');
             let totalS = 0, totalA = 0;
 
-            sections.forEach((item, i) => {
+            data.forEach((item, i) => {
                 let a = parseInt(absInputs[i].value) || 0;
-                let p = ((item.s - a) / item.s) * 100;
+                let p = ((item.st - a) / item.st) * 100;
+                let cell = document.getElementById(`p-${i}`);
                 
-                // Set Color Logic
-                let color = 'var(--low-perf)'; // Default Red
-                if (p > 75) color = 'var(--high-perf)'; // Green
-                else if (p >= 60) color = 'var(--mid-perf)'; // Orange/Amber
+                cell.innerText = p.toFixed(1) + '%';
+                
+                // Color Logic
+                if(p > 75) cell.style.color = "var(--green)";
+                else if(p >= 60) cell.style.color = "var(--orange)";
+                else cell.style.color = "var(--red)";
 
-                pCells[i].innerText = p.toFixed(1) + '%';
-                pCells[i].style.color = color;
-
-                totalS += item.s;
+                totalS += item.st;
                 totalA += a;
             });
 
             document.getElementById('tStr').innerText = totalS;
             document.getElementById('tAbs').innerText = totalA;
             let totalP = ((totalS - totalA) / totalS) * 100;
-            const tDisplay = document.getElementById('tPerc');
-            tDisplay.innerText = totalP.toFixed(2) + '%';
-            
-            // Total Percent Color
-            tDisplay.style.color = totalP > 75 ? 'var(--high-perf)' : (totalP >= 60 ? 'var(--mid-perf)' : 'var(--low-perf)');
+            document.getElementById('tPerc').innerText = totalP.toFixed(2) + '%';
         }
 
-        function shareToWhatsApp() {
-            let msg = `*NA BLOCK ATTENDANCE REPORT*\n\n`;
-            msg += `*Sec | Str | Abs | %*\n`;
-            msg += `------------------------\n`;
-            
-            const absIn = document.querySelectorAll('.abs-in');
-            const menIn = document.querySelectorAll('.men-in');
-
-            sections.forEach((item, i) => {
-                let a = absIn[i].value || 0;
-                let p = document.getElementById(`p-${i}`).innerText;
-                msg += `📍 *${item.n}* | ${item.s} | ${a} | *${p}*\n`;
-                msg += `_Mentor: ${menIn[i].value}_\n\n`;
+        function downloadImage() {
+            const report = document.getElementById('reportCapture');
+            html2canvas(report, { backgroundColor: '#050505' }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = 'NA_Block_Report.png';
+                link.href = canvas.toDataURL();
+                link.click();
             });
+        }
 
-            msg += `------------------------\n`;
-            msg += `📊 *GRAND TOTAL:* ${document.getElementById('tStr').innerText} | ${document.getElementById('tAbs').innerText} | *${document.getElementById('tPerc').innerText}*\n\n`;
-            msg += `*Notice:* All class incharges/mentors are requested to do PCR for your respective section.\n\n`;
+        function sendWhatsApp() {
+            let msg = `*NA BLOCK ATTENDANCE REPORT*\n\n`;
+            const absInputs = document.querySelectorAll('.abs-input');
+            data.forEach((item, i) => {
+                let a = absInputs[i].value || 0;
+                let p = document.getElementById(`p-${i}`).innerText;
+                msg += `📍 *${item.s}* | Abs: ${a} | *${p}*\n`;
+            });
+            msg += `\n📊 *TOTAL:* Str: ${document.getElementById('tStr').innerText} | Abs: ${document.getElementById('tAbs').innerText} | *${document.getElementById('tPerc').innerText}*\n\n`;
+            msg += `_All class incharges/mentors are requested to do PCR for your respective section._\n\n`;
             msg += `*Designed by G.N.R*`;
-
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
