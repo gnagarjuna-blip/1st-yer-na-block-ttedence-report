@@ -3,267 +3,257 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.N.R Professional Dashboard</title>
+    <title>G.N.R - NA Block Professional Report</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root {
-            --bg: #1a1a1b;
-            --card-bg: #262627;
-            --accent-white: #ffffff;
-            --text-main: #e8e8e8;
-            --border-color: #3e3e3e;
+            --bg-grey: #2c2c2e;
+            --card-grey: #3a3a3c;
+            --text-white: #ffffff;
+            --accent-blue: #00d2ff;
             --green: #2ecc71;
             --red: #ff4d4d;
-            --blue: #00d2ff;
-            --purple: #a29bfe;
+            --border: #4a4a4c;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
+            font-family: 'Segoe UI', sans-serif;
+            background-color: var(--bg-grey);
+            color: var(--text-white);
             margin: 0;
-            padding: 10px;
-            height: 100vh;
+            padding: 20px;
             display: flex;
             flex-direction: column;
-            overflow: hidden; /* Single page view */
+            align-items: center;
         }
 
-        /* Top Controls */
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 20px;
-            background: var(--card-bg);
-            border-radius: 10px;
-            margin-bottom: 10px;
-            border: 1px solid var(--border-color);
+        /* Container for the whole report to capture as image */
+        #reportCapture {
+            background-color: var(--card-grey);
+            width: 100%;
+            max-width: 800px;
+            padding: 30px;
+            border-radius: 15px;
+            border: 1px solid var(--border);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .header-section {
+            text-align: center;
+            margin-bottom: 30px;
         }
 
         .header-title {
-            color: var(--accent-white);
-            font-size: 1.3rem;
+            color: var(--text-white);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 2px;
+            font-size: 1.8rem;
             margin: 0;
             font-weight: 800;
         }
 
-        .view-selector {
-            background: #111;
-            color: var(--blue);
-            border: 1px solid var(--blue);
-            padding: 8px 15px;
-            border-radius: 5px;
+        .view-selector-container {
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .selector {
+            width: 100%;
+            padding: 12px;
+            background: #1c1c1e;
+            color: var(--accent-blue);
+            border: 2px solid var(--accent-blue);
+            border-radius: 8px;
             font-weight: bold;
-            outline: none;
-        }
-
-        /* Main Grid */
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 15px;
-            flex: 1;
-            max-height: 82vh;
-        }
-
-        /* Left Content: Tables */
-        .content-area {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 15px;
-            border: 1px solid var(--border-color);
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
+            cursor: pointer;
         }
 
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 15px; /* Increased gap between sections */
+            border-spacing: 0 15px; /* PROFESSIONAL SPACING BETWEEN SECTIONS */
         }
 
         th {
-            font-size: 0.75rem;
-            color: #888;
+            color: #8e8e93;
+            font-size: 0.8rem;
             text-transform: uppercase;
-            padding-bottom: 5px;
+            padding: 10px;
         }
 
         td {
-            padding: 12px;
+            background: #2c2c2e;
+            padding: 20px 10px;
             text-align: center;
-            background: #2d2d2f;
-            font-size: 0.9rem;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
         }
 
-        tr td:first-child { border-radius: 8px 0 0 8px; color: var(--blue); font-weight: bold; }
-        tr td:last-child { border-radius: 0 8px 8px 0; }
+        td:first-child { border-left: 1px solid var(--border); border-radius: 10px 0 0 10px; color: var(--accent-blue); font-weight: bold; }
+        td:last-child { border-right: 1px solid var(--border); border-radius: 0 10px 10px 0; color: #d1d1d6; font-style: italic; }
 
         .abs-input {
-            width: 45px;
+            width: 60px;
             background: #000;
-            border: 1px solid #444;
+            border: 1px solid #555;
             color: var(--red);
-            padding: 5px;
+            padding: 8px;
             text-align: center;
-            border-radius: 4px;
+            border-radius: 5px;
             font-weight: bold;
+            font-size: 1rem;
         }
 
-        /* Status Badges for PCR */
-        .status-badge {
-            padding: 6px 12px;
-            border-radius: 4px;
-            font-weight: bold;
-            cursor: pointer;
-            font-size: 0.75rem;
-        }
-        .not-sub { background: var(--red); color: #fff; }
-        .sub { background: var(--green); color: #000; }
-
-        /* Appreciation Box */
-        .appreciation-box {
-            margin-top: 10px;
-            padding: 10px;
-            border-radius: 8px;
+        /* Appreciation UI */
+        #appreciationArea {
+            margin: 20px 0;
+            padding: 20px;
             background: rgba(46, 204, 113, 0.1);
-            border: 1px dashed var(--green);
+            border: 2px dashed var(--green);
+            border-radius: 10px;
             text-align: center;
             display: none;
         }
 
-        .official-note {
-            margin-top: 10px;
-            font-size: 0.75rem;
-            color: #ffaaaa;
-            text-align: center;
-            text-transform: uppercase;
-            border-top: 1px solid #444;
-            padding-top: 10px;
+        .appreciation-msg {
+            color: var(--green);
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin: 0;
         }
 
-        /* Right Content: Visuals */
-        .visual-area {
+        /* Pie Chart below table */
+        .chart-container {
+            width: 100%;
+            max-width: 400px;
+            margin: 40px auto;
+        }
+
+        .official-note {
+            text-align: center;
+            color: #ff9f0a;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+            margin-top: 20px;
+            border-top: 1px solid var(--border);
+            padding-top: 20px;
+        }
+
+        /* Bottom Controls (Not captured in SS) */
+        .controls-area {
+            width: 100%;
+            max-width: 800px;
+            margin-top: 30px;
             display: flex;
-            flex-direction: column;
             gap: 15px;
         }
 
-        .chart-card {
-            background: var(--card-bg);
-            border-radius: 12px;
-            padding: 20px;
-            flex: 1;
-            border: 1px solid var(--border-color);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .action-card {
-            background: var(--card-bg);
-            padding: 15px;
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-        }
-
         .btn {
-            width: 100%;
-            padding: 12px;
-            margin-top: 8px;
+            flex: 1;
+            padding: 15px;
+            border-radius: 10px;
             border: none;
-            border-radius: 6px;
+            font-weight: bold;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .btn-upload { background: #5e5ce6; color: white; }
+        .btn-save { background: white; color: black; }
+
+        .hidden { display: none; }
+        #ocrStatus { color: var(--accent-blue); text-align: center; margin-top: 10px; font-weight: bold; }
+
+        /* PCR Badge */
+        .pcr-badge {
+            padding: 8px 15px;
+            border-radius: 5px;
             font-weight: bold;
             cursor: pointer;
         }
-        .btn-ss { background: var(--accent-white); color: #000; }
-        .btn-up { background: #444; color: #fff; }
-
-        .hidden { display: none; }
-        #processing { font-size: 0.7rem; color: var(--blue); text-align: center; display: none; }
+        .not-sub { background: var(--red); color: white; }
+        .sub { background: var(--green); color: black; }
     </style>
 </head>
 <body>
 
-    <div class="top-bar">
-        <h1 class="header-title" id="mainTitle">NA Block 1st Year Attendance Report</h1>
-        <select class="view-selector" id="modeChange" onchange="toggleView()">
-            <option value="att">📋 ATTENDANCE VIEW</option>
-            <option value="pcr">📑 PCR STATUS VIEW</option>
+    <div class="view-selector-container">
+        <select class="selector" id="mode" onchange="switchView()">
+            <option value="attendance">📋 VIEW ATTENDANCE REPORT</option>
+            <option value="pcr">📑 VIEW PCR STATUS REPORT</option>
         </select>
     </div>
 
-    <div class="dashboard-grid">
-        <div class="content-area" id="captureArea">
-            <div id="attendanceView">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Total</th>
-                            <th>Absent</th>
-                            <th>%</th>
-                            <th>Mentor Name</th>
-                        </tr>
-                    </thead>
-                    <tbody id="attBody"></tbody>
-                </table>
-            </div>
-
-            <div id="pcrView" class="hidden">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Section</th>
-                            <th>Mentor Name</th>
-                            <th>PCR Status</th>
-                        </tr>
-                    </thead>
-                    <tbody id="pcrBody"></tbody>
-                </table>
-            </div>
-
-            <div>
-                <div class="appreciation-box" id="appBox">
-                    <span style="color: var(--green); font-weight: bold;" id="appText"></span>
-                </div>
-                <div class="official-note">
-                    📢 Official: Please update respective section reports immediately.
-                </div>
-            </div>
+    <div id="reportCapture">
+        <div class="header-section">
+            <h1 class="header-title" id="mainTitle">Na Block 1st Year Attendance Report</h1>
         </div>
 
-        <div class="visual-area">
-            <div class="chart-card">
-                <canvas id="attendancePie"></canvas>
-            </div>
-            
-            <div class="action-card">
-                <p style="font-size: 0.7rem; color: #888; margin-bottom: 5px;">AUTOMATIC SCAN (Upload image with Section Name & Absent count in brackets)</p>
-                <input type="file" id="imageUpload" class="btn btn-up" accept="image/*">
-                <div id="processing">Scanning Image Content...</div>
-                <button class="btn btn-ss" onclick="takeScreenshot()">Download Final Report</button>
-            </div>
+        <div id="attendanceView">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Strength</th>
+                        <th>Absent</th>
+                        <th>%</th>
+                        <th>Mentor Name</th>
+                    </tr>
+                </thead>
+                <tbody id="attBody"></tbody>
+            </table>
         </div>
+
+        <div id="pcrView" class="hidden">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Section</th>
+                        <th>Mentor Name</th>
+                        <th>PCR Status</th>
+                    </tr>
+                </thead>
+                <tbody id="pcrBody"></tbody>
+            </table>
+        </div>
+
+        <div id="appreciationArea">
+            <p class="appreciation-msg" id="appText">Excellent Performance! 👏</p>
+        </div>
+
+        <div class="chart-container">
+            <canvas id="attendancePie"></canvas>
+        </div>
+
+        <div class="official-note">
+            ⚠️ Attention: Please update PCR data for your respective sections immediately!
+        </div>
+    </div>
+
+    <div id="ocrStatus"></div>
+
+    <div class="controls-area">
+        <label class="btn btn-upload" style="text-align: center;">
+            📤 Upload Image
+            <input type="file" id="imageInput" accept="image/*" style="display: none;">
+        </label>
+        <button class="btn btn-save" onclick="downloadReport()">📥 Save Report Image</button>
     </div>
 
     <script>
         const sections = [
-            { n: "CSE-C", s: 60, m: "Yogesh/Anusuya" },
-            { n: "CSE-D", s: 62, m: "Adrish/Govind" },
-            { n: "CSE-E", s: 58, m: "Sukanya/Pradeep" },
-            { n: "CSM-A", s: 63, m: "Shivani/K.Shivani" },
-            { n: "IT-A", s: 49, m: "Alpana/Sujith" },
-            { n: "ECE-A", s: 69, m: "Sumayyah/Sainath" },
-            { n: "ECE-B", s: 69, m: "Muzammil/Anusha" },
-            { n: "DS", s: 62, m: "Subhasish/Jayanthi" }
+            { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
+            { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
+            { n: "CSE-E", s: 58, m: "Ms.Sukanya/Mr.Pradeep" },
+            { n: "CSM-A", s: 63, m: "Ms.Shivani/Ms.K.Shivani" },
+            { n: "IT-A", s: 49, m: "Ms.Alpana Singh/Mr.Sujith" },
+            { n: "ECE-A", s: 69, m: "Ms.Sumayyah/Mr.Sainath" },
+            { n: "ECE-B", s: 69, m: "Mr.Muzammil/Ms.Anusha" },
+            { n: "DS", s: 62, m: "Dr.Subhasish/Ms.Jayanthi" }
         ];
 
         let pieChart;
@@ -271,66 +261,69 @@
         function init() {
             const ab = document.getElementById('attBody');
             const pb = document.getElementById('pcrBody');
-            
+
             sections.forEach((c, i) => {
                 ab.innerHTML += `
                     <tr>
                         <td>${c.n}</td>
                         <td>${c.s}</td>
-                        <td><input type="number" class="abs-input" id="abs-${i}" value="0" oninput="updateData()"></td>
-                        <td id="perc-${i}" style="font-weight:bold;">100%</td>
-                        <td style="color:var(--purple); font-size:0.75rem;">${c.m}</td>
+                        <td><input type="number" class="abs-input" id="abs-${i}" value="0" oninput="calculate()"></td>
+                        <td id="p-${i}" style="font-weight:bold;">100%</td>
+                        <td>${c.m}</td>
                     </tr>
                 `;
                 pb.innerHTML += `
                     <tr>
                         <td>${c.n}</td>
-                        <td style="color:var(--purple); font-size:0.75rem;">${c.m}</td>
-                        <td><span id="st-${i}" class="status-badge not-sub" onclick="toggleStatus(${i})">NOT SUBMITTED</span></td>
+                        <td>${c.m}</td>
+                        <td><span id="st-${i}" class="pcr-badge not-sub" onclick="togglePCR(${i})">NOT SUBMITTED</span></td>
                     </tr>
                 `;
             });
             setupChart();
-            updateData();
+            calculate();
         }
 
-        function updateData() {
-            let tStr = 0, tAbs = 0;
+        function calculate() {
+            let totalS = 0, totalA = 0;
             sections.forEach((c, i) => {
                 let a = parseInt(document.getElementById(`abs-${i}`).value) || 0;
-                let p = ((c.s - a) / c.s) * 100;
-                document.getElementById(`perc-${i}`).innerText = p.toFixed(1) + "%";
-                document.getElementById(`perc-${i}`).style.color = p >= 90 ? "var(--green)" : (p >= 75 ? "var(--purple)" : "var(--red)");
-                tStr += c.s; tAbs += a;
+                let perc = ((c.s - a) / c.s) * 100;
+                document.getElementById(`p-${i}`).innerText = perc.toFixed(1) + "%";
+                document.getElementById(`p-${i}`).style.color = perc >= 90 ? "var(--green)" : (perc >= 75 ? "#ff9f0a" : "var(--red)");
+                totalS += c.s; totalA += a;
             });
 
-            const overall = ((tStr - tAbs) / tStr) * 100;
-            pieChart.data.datasets[0].data = [tStr - tAbs, tAbs];
+            const overall = ((totalS - totalA) / totalS) * 100;
+            pieChart.data.datasets[0].data = [totalS - totalA, totalA];
             pieChart.update();
 
-            // Appreciation Logic
-            const box = document.getElementById('appBox');
-            if(overall >= 90) {
-                box.style.display = 'block';
-                document.getElementById('appText').innerText = `Excellent! High Attendance: ${overall.toFixed(1)}% 👏 High Professionalism maintained!`;
+            const appArea = document.getElementById('appreciationArea');
+            if (overall >= 92) {
+                appArea.style.display = 'block';
+                document.getElementById('appText').innerText = `High Appreciation! Overall Attendance is ${overall.toFixed(1)}% 👏 High Professionalism Maintained!`;
             } else {
-                box.style.display = 'none';
+                appArea.style.display = 'none';
             }
         }
 
-        function toggleStatus(i) {
-            const el = document.getElementById(`st-${i}`);
-            const isNot = el.classList.contains('not-sub');
-            el.className = `status-badge ${isNot ? 'sub' : 'not-sub'}`;
-            el.innerText = isNot ? "SUBMITTED" : "NOT SUBMITTED";
-        }
-
-        function toggleView() {
-            const val = document.getElementById('modeChange').value;
-            const isAtt = val === 'att';
+        function switchView() {
+            const mode = document.getElementById('mode').value;
+            const isAtt = mode === 'attendance';
             document.getElementById('attendanceView').classList.toggle('hidden', !isAtt);
             document.getElementById('pcrView').classList.toggle('hidden', isAtt);
-            document.getElementById('mainTitle').innerText = isAtt ? "NA Block 1st Year Attendance Report" : "NA Block 1st Year PCR Status Report";
+            document.getElementById('mainTitle').innerText = isAtt ? "Na Block 1st Year Attendance Report" : "Na Block 1st Year PCR Status Report";
+        }
+
+        function togglePCR(i) {
+            const el = document.getElementById(`st-${i}`);
+            if (el.classList.contains('not-sub')) {
+                el.classList.replace('not-sub', 'sub');
+                el.innerText = "SUBMITTED";
+            } else {
+                el.classList.replace('sub', 'not-sub');
+                el.innerText = "NOT SUBMITTED";
+            }
         }
 
         function setupChart() {
@@ -342,38 +335,55 @@
                     datasets: [{
                         data: [100, 0],
                         backgroundColor: ['#2ecc71', '#ff4d4d'],
-                        borderWidth: 0
+                        borderColor: '#3a3a3c',
+                        borderWidth: 2
                     }]
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { labels: { color: '#fff' } } }
+                    plugins: { legend: { labels: { color: 'white', font: { size: 14 } } } }
                 }
             });
         }
 
-        // IMAGE OCR LOGIC
-        document.getElementById('imageUpload').addEventListener('change', function(e) {
+        // --- IMPROVED IMAGE OCR LOGIC ---
+        document.getElementById('imageInput').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if(!file) return;
-            document.getElementById('processing').style.display = 'block';
+            if (!file) return;
+
+            const statusEl = document.getElementById('ocrStatus');
+            statusEl.innerText = "⌛ Scanning image for Section Absentees...";
+
             Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+                console.log("Full Scanned Text:", text); // Helpful for debugging
+                
+                // Process the text to handle common OCR mistakes
+                const cleanText = text.toUpperCase().replace(/\s+/g, ' ');
+
                 sections.forEach((c, i) => {
-                    const regex = new RegExp(`${c.n}.*?[\\(\\[](\\d+)[\\)\\]]`, 'i');
-                    const match = text.match(regex);
-                    if(match) document.getElementById(`abs-${i}`).value = match[1];
+                    // This regex looks for: SectionName + (any characters like -, :, etc) + (Number)
+                    // Specifically targeting patterns like "CSE-C (5)" or "CSE-C : 5" or "CSE-C 5"
+                    const regex = new RegExp(`${c.n.toUpperCase()}.*?(\\d+)`, 'i');
+                    const match = cleanText.match(regex);
+                    
+                    if (match && match[1]) {
+                        document.getElementById(`abs-${i}`).value = match[1];
+                    }
                 });
-                updateData();
-                document.getElementById('processing').style.display = 'none';
+
+                statusEl.innerText = "✅ Scan Complete! Verify counts below.";
+                calculate();
+                setTimeout(() => { statusEl.innerText = ""; }, 5000);
+            }).catch(err => {
+                statusEl.innerText = "❌ Scan failed. Please enter manually.";
             });
         });
 
-        function takeScreenshot() {
-            const area = document.getElementById('captureArea');
-            html2canvas(area, { backgroundColor: '#1a1a1b', scale: 2 }).then(canvas => {
+        function downloadReport() {
+            const area = document.getElementById('reportCapture');
+            html2canvas(area, { backgroundColor: '#2c2c2e', scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `NA_Block_Report.png`;
+                link.download = `NA_Block_Report_${Date.now()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
