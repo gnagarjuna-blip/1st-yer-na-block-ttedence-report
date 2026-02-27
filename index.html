@@ -3,174 +3,208 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.N.R Dashboard - NA Block</title>
+    <title>Professional Attendance Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root {
-            --bg: #2b2b2b;
-            --card-bg: #353535;
-            --heading-white: #ffffff;
-            --educational-blue: #00e5ff;
-            --educational-purple: #bd93f9;
-            --text: #e0e0e0;
+            --bg: #1e1e1e;
+            --card-bg: #2d2d2d;
+            --accent: #ffffff;
+            --text-main: #e0e0e0;
+            --border-color: #444444;
+            --green: #2ecc71;
+            --red: #ff4d4d;
+            --purple: #a29bfe;
+            --blue: #74b9ff;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
-            padding: 5px;
+            padding: 15px;
             height: 100vh;
-            overflow: hidden; /* Prevents scrolling */
             display: flex;
             flex-direction: column;
+            overflow: hidden;
         }
 
-        /* Compact Header */
-        .header-title {
+        .header-container {
             text-align: center;
-            color: var(--heading-white);
-            font-size: 1.2rem;
-            margin: 5px 0;
+            margin-bottom: 15px;
+        }
+
+        .header-title {
+            color: var(--accent);
+            font-size: 1.6rem;
             text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 0;
             font-weight: 800;
         }
 
-        .main-container {
+        .dashboard-grid {
             display: grid;
-            grid-template-columns: 1.2fr 0.8fr;
-            gap: 10px;
+            grid-template-columns: 1.3fr 0.7fr;
+            gap: 20px;
             flex: 1;
-            padding: 5px;
-            max-height: 85vh;
+            max-height: 80vh;
         }
 
-        #reportCapture {
+        /* Professional Table Styling */
+        .table-section {
             background: var(--card-bg);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
         }
-
-        /* Professional Colored Fonts */
-        .sec-col { color: var(--educational-blue); font-weight: bold; }
-        .total-col { color: #f8f8f2; }
-        .men-col { color: var(--educational-purple); font-size: 0.7rem; }
 
         table {
             width: 100%;
-            border-collapse: collapse;
-            font-size: 0.75rem;
+            border-collapse: separate;
+            border-spacing: 0 12px; /* INCREASED GAP BETWEEN ROWS */
         }
 
         th {
-            background: #444;
-            color: #fff;
-            padding: 8px;
-            border-bottom: 2px solid #555;
+            text-align: center;
+            font-size: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
 
         td {
-            padding: 6px 4px;
+            padding: 15px 5px; /* Increased height */
             text-align: center;
-            border-bottom: 1px solid #444;
+            background: #353535;
         }
 
+        tr td:first-child { border-radius: 8px 0 0 8px; color: var(--blue); font-weight: bold; }
+        tr td:last-child { border-radius: 0 8px 8px 0; color: var(--purple); font-style: italic; }
+
         .abs-input {
-            width: 35px;
+            width: 50px;
             background: #111;
             border: 1px solid #555;
-            color: #ff5555;
+            color: var(--red);
+            padding: 5px;
             text-align: center;
+            border-radius: 4px;
             font-weight: bold;
         }
 
-        .chart-container {
-            background: #333;
-            border-radius: 8px;
-            padding: 10px;
+        /* Chart & Appreciation Section */
+        .visual-section {
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            gap: 15px;
         }
 
-        .controls-row {
+        .chart-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            background: #333;
-            padding: 5px 15px;
-            border-radius: 5px;
-            margin-bottom: 5px;
+            border: 1px solid var(--border-color);
+        }
+
+        .appreciation-box {
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px dashed var(--green);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            min-height: 50px;
+        }
+
+        .appreciation-text {
+            color: var(--green);
+            font-weight: bold;
+            font-size: 1rem;
+            margin: 0;
         }
 
         .official-note {
-            background: rgba(255, 85, 85, 0.1);
-            border-left: 3px solid #ff5555;
-            padding: 8px;
-            font-size: 0.7rem;
+            margin-top: 15px;
+            padding: 12px;
+            background: #222;
+            border-left: 4px solid var(--red);
+            font-size: 0.85rem;
             color: #ffaaaa;
-            margin-top: 5px;
+            text-transform: uppercase;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            padding: 10px;
+            background: #222;
+            border-radius: 8px;
         }
 
         .btn {
-            padding: 8px 12px;
+            padding: 10px 20px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
             cursor: pointer;
             font-weight: bold;
-            font-size: 0.7rem;
         }
-        .btn-upload { background: #6272a4; color: white; }
-        .btn-ss { background: #50fa7b; color: #282a36; }
+        .btn-ss { background: var(--accent); color: #000; }
+        .btn-up { background: #444; color: #fff; }
+
+        #processing { font-size: 0.7rem; color: var(--blue); display: none; }
     </style>
 </head>
 <body>
 
-    <h2 class="header-title">NA Block 1st Year Attendance Report</h2>
-
-    <div class="controls-row">
-        <div>
-            <label style="font-size: 0.7rem;">Auto-Scan Image: </label>
-            <input type="file" id="imageUpload" accept="image/*" class="btn btn-upload">
-        </div>
-        <button class="btn btn-ss" onclick="takeScreenshot()">Download Report</button>
+    <div class="header-container">
+        <h1 class="header-title">NA Block 1st Year Attendance Report</h1>
     </div>
 
-    <div class="main-container">
-        <div id="reportCapture">
+    <div class="dashboard-grid">
+        <div class="table-section" id="captureArea">
             <table>
                 <thead>
                     <tr>
-                        <th>SECTION</th>
-                        <th>STRENGTH</th>
-                        <th>ABSENT</th>
+                        <th>Section</th>
+                        <th>Total</th>
+                        <th>Absent</th>
                         <th>%</th>
-                        <th>MENTOR</th>
+                        <th>Mentor</th>
                     </tr>
                 </thead>
                 <tbody id="tableBody"></tbody>
-                <tr style="background:#222; font-weight: bold;">
-                    <td>TOTAL</td>
-                    <td id="gStr">492</td>
-                    <td id="gAbs" style="color:#ff5555;">0</td>
-                    <td id="gPerc" style="color:#50fa7b;">100%</td>
-                    <td>-</td>
-                </tr>
             </table>
 
+            <div class="appreciation-box" id="appBox">
+                <p class="appreciation-text" id="appText">Excellent Work! High attendance maintained. 👏</p>
+            </div>
+
             <div class="official-note">
-                ⚠️ OFFICIAL: Mentors must verify and submit the above PCR attendance immediately. 
+                📢 Notice: All class in-charges are requested to verify the above counts.
             </div>
         </div>
 
-        <div class="chart-container">
-            <canvas id="attendanceChart"></canvas>
+        <div class="visual-section">
+            <div class="chart-card">
+                <canvas id="attendancePie"></canvas>
+            </div>
+            
+            <div class="controls">
+                <input type="file" id="imageUpload" class="btn btn-up" accept="image/*">
+                <span id="processing">Reading Image...</span>
+                <button class="btn btn-ss" onclick="takeScreenshot()">Save Report</button>
+            </div>
         </div>
     </div>
 
@@ -186,18 +220,18 @@
             { n: "DS", s: 62, m: "Subhasish/Jayanthi" }
         ];
 
-        let chart;
+        let pieChart;
 
         function init() {
             const body = document.getElementById('tableBody');
             data.forEach((c, i) => {
                 body.innerHTML += `
                     <tr>
-                        <td class="sec-col">${c.n}</td>
-                        <td class="total-col">${c.s}</td>
+                        <td>${c.n}</td>
+                        <td>${c.s}</td>
                         <td><input type="number" class="abs-input" id="abs-${i}" value="0" oninput="update()"></td>
-                        <td id="p-${i}" style="font-weight:bold;">100%</td>
-                        <td class="men-col">${c.m}</td>
+                        <td id="p-${i}" style="font-weight:bold; color: var(--green);">100%</td>
+                        <td>${c.m}</td>
                     </tr>
                 `;
             });
@@ -206,70 +240,74 @@
         }
 
         function update() {
-            let tS = 0, tA = 0;
-            const percentages = [];
+            let totalStrength = 0;
+            let totalAbsent = 0;
+            
             data.forEach((c, i) => {
-                let a = parseInt(document.getElementById(`abs-${i}`).value) || 0;
-                let p = ((c.s - a) / c.s) * 100;
-                document.getElementById(`p-${i}`).innerText = p.toFixed(1) + "%";
-                tS += c.s; tA += a;
-                percentages.push(p.toFixed(1));
+                let absVal = parseInt(document.getElementById(`abs-${i}`).value) || 0;
+                let perc = ((c.s - absVal) / c.s) * 100;
+                let percEl = document.getElementById(`p-${i}`);
+                
+                percEl.innerText = perc.toFixed(1) + "%";
+                percEl.style.color = perc < 75 ? "var(--red)" : "var(--green)";
+                
+                totalStrength += c.s;
+                totalAbsent += absVal;
             });
-            document.getElementById('gAbs').innerText = tA;
-            document.getElementById('gPerc').innerText = (((tS - tA) / tS) * 100).toFixed(1) + "%";
-            chart.data.datasets[0].data = percentages;
-            chart.update();
+
+            const totalPresent = totalStrength - totalAbsent;
+            const overallPerc = (totalPresent / totalStrength) * 100;
+
+            // Update Pie Chart
+            pieChart.data.datasets[0].data = [totalPresent, totalAbsent];
+            pieChart.update();
+
+            // Appreciation Logic
+            const appBox = document.getElementById('appBox');
+            if (overallPerc >= 90) {
+                appBox.style.display = 'block';
+                document.getElementById('appText').innerHTML = `Great Job! Overall Attendance is ${overallPerc.toFixed(1)}% 👏🏆`;
+            } else {
+                appBox.style.display = 'none';
+            }
         }
 
         function setupChart() {
-            const ctx = document.getElementById('attendanceChart').getContext('2d');
-            chart = new Chart(ctx, {
-                type: 'bar',
+            const ctx = document.getElementById('attendancePie').getContext('2d');
+            pieChart = new Chart(ctx, {
+                type: 'pie',
                 data: {
-                    labels: data.map(d => d.n),
+                    labels: ['Present', 'Absent'],
                     datasets: [{
-                        label: 'Attendance %',
-                        data: Array(8).fill(100),
-                        backgroundColor: '#00e5ff'
+                        data: [100, 0],
+                        backgroundColor: ['#2ecc71', '#ff4d4d'],
+                        borderWidth: 0
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: { x: { min: 0, max: 100, ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } }
+                    plugins: {
+                        legend: { labels: { color: '#fff', font: { size: 14 } } }
+                    }
                 }
             });
         }
 
-        // IMAGE OCR LOGIC
+        // IMPROVED IMAGE SCANNING
         document.getElementById('imageUpload').addEventListener('change', function(e) {
             const file = e.target.files[0];
             if (!file) return;
+
+            document.getElementById('processing').style.display = 'block';
+
             Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+                console.log("Scanned Text:", text); // Debugging
                 data.forEach((c, i) => {
-                    // Regex looks for "SectionName" followed by a number in brackets, e.g., "CSE-C (5)" or "CSE-C 5"
-                    const regex = new RegExp(`${c.n}.*?\\(?(\\d+)\\)?`, 'i');
+                    // This regex finds the section name followed by numbers in brackets like (5) or [5]
+                    const regex = new RegExp(`${c.n}.*?[\\(\\[](\\d+)[\\)\\]]`, 'i');
                     const match = text.match(regex);
                     if (match) {
                         document.getElementById(`abs-${i}`).value = match[1];
                     }
                 });
-                update();
-            });
-        });
-
-        function takeScreenshot() {
-            html2canvas(document.body, { backgroundColor: '#2b2b2b' }).then(canvas => {
-                const link = document.createElement('a');
-                link.download = 'NA_Block_SinglePage_Report.png';
-                link.href = canvas.toDataURL();
-                link.click();
-            });
-        }
-
-        init();
-    </script>
-</body>
-</html>
