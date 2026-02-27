@@ -7,9 +7,10 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            --bg: #0a0a0c;
-            --card-bg: #121218;
-            --blue-header: #00d2ff;
+            /* CHANGED: Background colors to grey and blue-header to white */
+            --bg: #2c2c2e;           /* Dark grey main background */
+            --card-bg: #3a3a3c;      /* Slightly lighter grey for the report area */
+            --blue-header: #ffffff;   /* Changed from blue to white */
             --text: #ffffff;
             --green: #2ecc71;
             --orange: #f39c12;
@@ -50,7 +51,7 @@
             border-radius: 15px;
             width: 95%;
             max-width: 700px;
-            border: 1px solid #2a2a35;
+            border: 1px solid #4a4a4e; /* Darker grey border */
             position: relative;
         }
 
@@ -67,12 +68,13 @@
 
         .header-title {
             text-align: center;
-            color: var(--blue-header);
+            color: var(--blue-header); /* Now White */
             font-size: 1.4rem;
             font-weight: 800;
             text-transform: uppercase;
             margin: 15px 0 25px 0;
-            text-shadow: 0 0 15px rgba(0, 210, 255, 0.4);
+            /* Updated shadow to reflect white color */
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); 
         }
 
         table {
@@ -82,8 +84,9 @@
         }
 
         th {
-            background: rgba(0, 210, 255, 0.15);
-            color: var(--blue-header);
+            /* Changed background to a subtle white overlay */
+            background: rgba(255, 255, 255, 0.1); 
+            color: var(--blue-header); /* Now White */
             padding: 12px 5px;
             font-size: 0.75rem;
             border-bottom: 2px solid var(--blue-header);
@@ -92,17 +95,17 @@
         td {
             padding: 12px 4px;
             text-align: center;
-            border-bottom: 1px solid #21262d;
+            border-bottom: 1px solid #4a4a4e;
             font-size: 0.85rem;
         }
 
         .sec-col { font-weight: bold; color: #fff; }
-        .men-col { color: #b0b0b0; font-size: 0.75rem; font-style: italic; }
+        .men-col { color: #d0d0d0; font-size: 0.75rem; font-style: italic; }
 
         input[type="number"] {
             width: 45px;
-            background: #000;
-            border: 1px solid #333;
+            background: #1c1c21;
+            border: 1px solid #555;
             color: #fff;
             padding: 5px;
             border-radius: 4px;
@@ -122,7 +125,6 @@
         .not-sub { background: var(--red); color: white; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
         .sub { background: var(--green); color: black; }
 
-        /* FIXED MESSAGE BOX BELOW TABLE */
         .official-note {
             background: rgba(255, 77, 77, 0.1);
             border: 1px solid var(--red);
@@ -161,7 +163,7 @@
             color: white;
             transition: 0.3s ease;
         }
-        .btn-ss { background: #3f51b5; }
+        .btn-ss { background: #5a5a5e; } /* Grey Button */
         .btn-wa { background: #128C7E; }
 
         .hidden { display: none; }
@@ -228,6 +230,7 @@
     </div>
 
     <script>
+        // ... (All original Javascript remains exactly the same) ...
         const data = [
             { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
             { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
@@ -299,7 +302,8 @@
 
         function takeScreenshot() {
             const area = document.getElementById('reportCapture');
-            html2canvas(area, { backgroundColor: '#121218', scale: 2 }).then(canvas => {
+            // UPDATED: backgroundColor set to grey for screenshot
+            html2canvas(area, { backgroundColor: '#3a3a3c', scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
                 link.download = `NA_Block_Report_${Date.now()}.png`;
                 link.href = canvas.toDataURL();
