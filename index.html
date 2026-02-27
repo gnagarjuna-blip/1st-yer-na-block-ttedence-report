@@ -3,95 +3,113 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Attendance Dashboard</title>
+    <title>G.N.R Professional Dashboard</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root {
-            --bg: #1e1e1e;
-            --card-bg: #2d2d2d;
-            --accent: #ffffff;
-            --text-main: #e0e0e0;
-            --border-color: #444444;
+            --bg: #1a1a1b;
+            --card-bg: #262627;
+            --accent-white: #ffffff;
+            --text-main: #e8e8e8;
+            --border-color: #3e3e3e;
             --green: #2ecc71;
             --red: #ff4d4d;
+            --blue: #00d2ff;
             --purple: #a29bfe;
-            --blue: #74b9ff;
         }
 
         body {
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg);
             color: var(--text-main);
             margin: 0;
-            padding: 15px;
+            padding: 10px;
             height: 100vh;
             display: flex;
             flex-direction: column;
-            overflow: hidden;
+            overflow: hidden; /* Single page view */
         }
 
-        .header-container {
-            text-align: center;
-            margin-bottom: 15px;
+        /* Top Controls */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border: 1px solid var(--border-color);
         }
 
         .header-title {
-            color: var(--accent);
-            font-size: 1.6rem;
+            color: var(--accent-white);
+            font-size: 1.3rem;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             margin: 0;
             font-weight: 800;
         }
 
-        .dashboard-grid {
-            display: grid;
-            grid-template-columns: 1.3fr 0.7fr;
-            gap: 20px;
-            flex: 1;
-            max-height: 80vh;
+        .view-selector {
+            background: #111;
+            color: var(--blue);
+            border: 1px solid var(--blue);
+            padding: 8px 15px;
+            border-radius: 5px;
+            font-weight: bold;
+            outline: none;
         }
 
-        /* Professional Table Styling */
-        .table-section {
+        /* Main Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 15px;
+            flex: 1;
+            max-height: 82vh;
+        }
+
+        /* Left Content: Tables */
+        .content-area {
             background: var(--card-bg);
             border-radius: 12px;
-            padding: 20px;
+            padding: 15px;
             border: 1px solid var(--border-color);
             display: flex;
             flex-direction: column;
+            justify-content: space-between;
         }
 
         table {
             width: 100%;
             border-collapse: separate;
-            border-spacing: 0 12px; /* INCREASED GAP BETWEEN ROWS */
+            border-spacing: 0 15px; /* Increased gap between sections */
         }
 
         th {
-            text-align: center;
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: #888;
             text-transform: uppercase;
-            padding-bottom: 10px;
-            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 5px;
         }
 
         td {
-            padding: 15px 5px; /* Increased height */
+            padding: 12px;
             text-align: center;
-            background: #353535;
+            background: #2d2d2f;
+            font-size: 0.9rem;
         }
 
         tr td:first-child { border-radius: 8px 0 0 8px; color: var(--blue); font-weight: bold; }
-        tr td:last-child { border-radius: 0 8px 8px 0; color: var(--purple); font-style: italic; }
+        tr td:last-child { border-radius: 0 8px 8px 0; }
 
         .abs-input {
-            width: 50px;
-            background: #111;
-            border: 1px solid #555;
+            width: 45px;
+            background: #000;
+            border: 1px solid #444;
             color: var(--red);
             padding: 5px;
             text-align: center;
@@ -99,8 +117,40 @@
             font-weight: bold;
         }
 
-        /* Chart & Appreciation Section */
-        .visual-section {
+        /* Status Badges for PCR */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 0.75rem;
+        }
+        .not-sub { background: var(--red); color: #fff; }
+        .sub { background: var(--green); color: #000; }
+
+        /* Appreciation Box */
+        .appreciation-box {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 8px;
+            background: rgba(46, 204, 113, 0.1);
+            border: 1px dashed var(--green);
+            text-align: center;
+            display: none;
+        }
+
+        .official-note {
+            margin-top: 10px;
+            font-size: 0.75rem;
+            color: #ffaaaa;
+            text-align: center;
+            text-transform: uppercase;
+            border-top: 1px solid #444;
+            padding-top: 10px;
+        }
+
+        /* Right Content: Visuals */
+        .visual-area {
             display: flex;
             flex-direction: column;
             gap: 15px;
@@ -111,105 +161,101 @@
             border-radius: 12px;
             padding: 20px;
             flex: 1;
+            border: 1px solid var(--border-color);
             display: flex;
             justify-content: center;
             align-items: center;
+        }
+
+        .action-card {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 12px;
             border: 1px solid var(--border-color);
         }
 
-        .appreciation-box {
-            background: rgba(46, 204, 113, 0.1);
-            border: 1px dashed var(--green);
-            padding: 15px;
-            border-radius: 10px;
-            text-align: center;
-            min-height: 50px;
-        }
-
-        .appreciation-text {
-            color: var(--green);
-            font-weight: bold;
-            font-size: 1rem;
-            margin: 0;
-        }
-
-        .official-note {
-            margin-top: 15px;
-            padding: 12px;
-            background: #222;
-            border-left: 4px solid var(--red);
-            font-size: 0.85rem;
-            color: #ffaaaa;
-            text-transform: uppercase;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 10px;
-            padding: 10px;
-            background: #222;
-            border-radius: 8px;
-        }
-
         .btn {
-            padding: 10px 20px;
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
             border: none;
-            border-radius: 5px;
-            cursor: pointer;
+            border-radius: 6px;
             font-weight: bold;
+            cursor: pointer;
         }
-        .btn-ss { background: var(--accent); color: #000; }
+        .btn-ss { background: var(--accent-white); color: #000; }
         .btn-up { background: #444; color: #fff; }
 
-        #processing { font-size: 0.7rem; color: var(--blue); display: none; }
+        .hidden { display: none; }
+        #processing { font-size: 0.7rem; color: var(--blue); text-align: center; display: none; }
     </style>
 </head>
 <body>
 
-    <div class="header-container">
-        <h1 class="header-title">NA Block 1st Year Attendance Report</h1>
+    <div class="top-bar">
+        <h1 class="header-title" id="mainTitle">NA Block 1st Year Attendance Report</h1>
+        <select class="view-selector" id="modeChange" onchange="toggleView()">
+            <option value="att">📋 ATTENDANCE VIEW</option>
+            <option value="pcr">📑 PCR STATUS VIEW</option>
+        </select>
     </div>
 
     <div class="dashboard-grid">
-        <div class="table-section" id="captureArea">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Section</th>
-                        <th>Total</th>
-                        <th>Absent</th>
-                        <th>%</th>
-                        <th>Mentor</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody"></tbody>
-            </table>
-
-            <div class="appreciation-box" id="appBox">
-                <p class="appreciation-text" id="appText">Excellent Work! High attendance maintained. 👏</p>
+        <div class="content-area" id="captureArea">
+            <div id="attendanceView">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Total</th>
+                            <th>Absent</th>
+                            <th>%</th>
+                            <th>Mentor Name</th>
+                        </tr>
+                    </thead>
+                    <tbody id="attBody"></tbody>
+                </table>
             </div>
 
-            <div class="official-note">
-                📢 Notice: All class in-charges are requested to verify the above counts.
+            <div id="pcrView" class="hidden">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Section</th>
+                            <th>Mentor Name</th>
+                            <th>PCR Status</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pcrBody"></tbody>
+                </table>
+            </div>
+
+            <div>
+                <div class="appreciation-box" id="appBox">
+                    <span style="color: var(--green); font-weight: bold;" id="appText"></span>
+                </div>
+                <div class="official-note">
+                    📢 Official: Please update respective section reports immediately.
+                </div>
             </div>
         </div>
 
-        <div class="visual-section">
+        <div class="visual-area">
             <div class="chart-card">
                 <canvas id="attendancePie"></canvas>
             </div>
             
-            <div class="controls">
+            <div class="action-card">
+                <p style="font-size: 0.7rem; color: #888; margin-bottom: 5px;">AUTOMATIC SCAN (Upload image with Section Name & Absent count in brackets)</p>
                 <input type="file" id="imageUpload" class="btn btn-up" accept="image/*">
-                <span id="processing">Reading Image...</span>
-                <button class="btn btn-ss" onclick="takeScreenshot()">Save Report</button>
+                <div id="processing">Scanning Image Content...</div>
+                <button class="btn btn-ss" onclick="takeScreenshot()">Download Final Report</button>
             </div>
         </div>
     </div>
 
     <script>
-        const data = [
+        const sections = [
             { n: "CSE-C", s: 60, m: "Yogesh/Anusuya" },
             { n: "CSE-D", s: 62, m: "Adrish/Govind" },
             { n: "CSE-E", s: 58, m: "Sukanya/Pradeep" },
@@ -223,53 +269,68 @@
         let pieChart;
 
         function init() {
-            const body = document.getElementById('tableBody');
-            data.forEach((c, i) => {
-                body.innerHTML += `
+            const ab = document.getElementById('attBody');
+            const pb = document.getElementById('pcrBody');
+            
+            sections.forEach((c, i) => {
+                ab.innerHTML += `
                     <tr>
                         <td>${c.n}</td>
                         <td>${c.s}</td>
-                        <td><input type="number" class="abs-input" id="abs-${i}" value="0" oninput="update()"></td>
-                        <td id="p-${i}" style="font-weight:bold; color: var(--green);">100%</td>
-                        <td>${c.m}</td>
+                        <td><input type="number" class="abs-input" id="abs-${i}" value="0" oninput="updateData()"></td>
+                        <td id="perc-${i}" style="font-weight:bold;">100%</td>
+                        <td style="color:var(--purple); font-size:0.75rem;">${c.m}</td>
+                    </tr>
+                `;
+                pb.innerHTML += `
+                    <tr>
+                        <td>${c.n}</td>
+                        <td style="color:var(--purple); font-size:0.75rem;">${c.m}</td>
+                        <td><span id="st-${i}" class="status-badge not-sub" onclick="toggleStatus(${i})">NOT SUBMITTED</span></td>
                     </tr>
                 `;
             });
             setupChart();
-            update();
+            updateData();
         }
 
-        function update() {
-            let totalStrength = 0;
-            let totalAbsent = 0;
-            
-            data.forEach((c, i) => {
-                let absVal = parseInt(document.getElementById(`abs-${i}`).value) || 0;
-                let perc = ((c.s - absVal) / c.s) * 100;
-                let percEl = document.getElementById(`p-${i}`);
-                
-                percEl.innerText = perc.toFixed(1) + "%";
-                percEl.style.color = perc < 75 ? "var(--red)" : "var(--green)";
-                
-                totalStrength += c.s;
-                totalAbsent += absVal;
+        function updateData() {
+            let tStr = 0, tAbs = 0;
+            sections.forEach((c, i) => {
+                let a = parseInt(document.getElementById(`abs-${i}`).value) || 0;
+                let p = ((c.s - a) / c.s) * 100;
+                document.getElementById(`perc-${i}`).innerText = p.toFixed(1) + "%";
+                document.getElementById(`perc-${i}`).style.color = p >= 90 ? "var(--green)" : (p >= 75 ? "var(--purple)" : "var(--red)");
+                tStr += c.s; tAbs += a;
             });
 
-            const totalPresent = totalStrength - totalAbsent;
-            const overallPerc = (totalPresent / totalStrength) * 100;
-
-            // Update Pie Chart
-            pieChart.data.datasets[0].data = [totalPresent, totalAbsent];
+            const overall = ((tStr - tAbs) / tStr) * 100;
+            pieChart.data.datasets[0].data = [tStr - tAbs, tAbs];
             pieChart.update();
 
             // Appreciation Logic
-            const appBox = document.getElementById('appBox');
-            if (overallPerc >= 90) {
-                appBox.style.display = 'block';
-                document.getElementById('appText').innerHTML = `Great Job! Overall Attendance is ${overallPerc.toFixed(1)}% 👏🏆`;
+            const box = document.getElementById('appBox');
+            if(overall >= 90) {
+                box.style.display = 'block';
+                document.getElementById('appText').innerText = `Excellent! High Attendance: ${overall.toFixed(1)}% 👏 High Professionalism maintained!`;
             } else {
-                appBox.style.display = 'none';
+                box.style.display = 'none';
             }
+        }
+
+        function toggleStatus(i) {
+            const el = document.getElementById(`st-${i}`);
+            const isNot = el.classList.contains('not-sub');
+            el.className = `status-badge ${isNot ? 'sub' : 'not-sub'}`;
+            el.innerText = isNot ? "SUBMITTED" : "NOT SUBMITTED";
+        }
+
+        function toggleView() {
+            const val = document.getElementById('modeChange').value;
+            const isAtt = val === 'att';
+            document.getElementById('attendanceView').classList.toggle('hidden', !isAtt);
+            document.getElementById('pcrView').classList.toggle('hidden', isAtt);
+            document.getElementById('mainTitle').innerText = isAtt ? "NA Block 1st Year Attendance Report" : "NA Block 1st Year PCR Status Report";
         }
 
         function setupChart() {
@@ -287,27 +348,38 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: {
-                        legend: { labels: { color: '#fff', font: { size: 14 } } }
-                    }
+                    plugins: { legend: { labels: { color: '#fff' } } }
                 }
             });
         }
 
-        // IMPROVED IMAGE SCANNING
+        // IMAGE OCR LOGIC
         document.getElementById('imageUpload').addEventListener('change', function(e) {
             const file = e.target.files[0];
-            if (!file) return;
-
+            if(!file) return;
             document.getElementById('processing').style.display = 'block';
-
             Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
-                console.log("Scanned Text:", text); // Debugging
-                data.forEach((c, i) => {
-                    // This regex finds the section name followed by numbers in brackets like (5) or [5]
+                sections.forEach((c, i) => {
                     const regex = new RegExp(`${c.n}.*?[\\(\\[](\\d+)[\\)\\]]`, 'i');
                     const match = text.match(regex);
-                    if (match) {
-                        document.getElementById(`abs-${i}`).value = match[1];
-                    }
+                    if(match) document.getElementById(`abs-${i}`).value = match[1];
                 });
+                updateData();
+                document.getElementById('processing').style.display = 'none';
+            });
+        });
+
+        function takeScreenshot() {
+            const area = document.getElementById('captureArea');
+            html2canvas(area, { backgroundColor: '#1a1a1b', scale: 2 }).then(canvas => {
+                const link = document.createElement('a');
+                link.download = `NA_Block_Report.png`;
+                link.href = canvas.toDataURL();
+                link.click();
+            });
+        }
+
+        init();
+    </script>
+</body>
+</html>
