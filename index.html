@@ -7,18 +7,19 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <style>
         :root {
-            /* CHANGED: Background colors to grey and blue-header to white */
-            --bg: #2c2c2e;           /* Dark grey main background */
-            --card-bg: #3a3a3c;      /* Slightly lighter grey for the report area */
-            --blue-header: #ffffff;   /* Changed from blue to white */
-            --text: #ffffff;
+            /* Professional Grey Palette */
+            --bg: #333333;           /* Main page background (Grey) */
+            --card-bg: #444444;      /* Report area background (Lighter Grey) */
+            --heading-white: #ffffff; /* Professional White for heading */
+            --text: #eeeeee;
+            --table-border: #555555;
             --green: #2ecc71;
             --orange: #f39c12;
             --red: #ff4d4d;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Arial, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -36,22 +37,22 @@
 
         .selector {
             width: 100%;
-            background: #1c1c21;
+            background: #222;
             color: white;
             padding: 12px;
-            border: 2px solid var(--blue-header);
+            border: 1px solid #666;
             border-radius: 8px;
             font-weight: bold;
         }
 
-        /* Screenshot Capture Area */
+        /* Report Area */
         #reportCapture {
             background: var(--card-bg);
             padding: 25px;
-            border-radius: 15px;
+            border-radius: 12px;
             width: 95%;
             max-width: 700px;
-            border: 1px solid #4a4a4e; /* Darker grey border */
+            border: 1px solid #555;
             position: relative;
         }
 
@@ -59,22 +60,21 @@
             position: absolute;
             top: 10px;
             right: 15px;
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             font-weight: bold;
-            background: linear-gradient(45deg, #f09, #0cf);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            color: #888;
         }
 
+        /* THE SPECIFIC WHITE HEADING */
         .header-title {
             text-align: center;
-            color: var(--blue-header); /* Now White */
-            font-size: 1.4rem;
-            font-weight: 800;
+            color: var(--heading-white); 
+            font-size: 1.5rem;
+            font-weight: 700;
             text-transform: uppercase;
             margin: 15px 0 25px 0;
-            /* Updated shadow to reflect white color */
-            text-shadow: 0 0 10px rgba(255, 255, 255, 0.2); 
+            letter-spacing: 1px;
+            text-shadow: none; /* Removed the blue glow for professionalism */
         }
 
         table {
@@ -84,65 +84,60 @@
         }
 
         th {
-            /* Changed background to a subtle white overlay */
-            background: rgba(255, 255, 255, 0.1); 
-            color: var(--blue-header); /* Now White */
+            background: #555555;
+            color: #ffffff;
             padding: 12px 5px;
             font-size: 0.75rem;
-            border-bottom: 2px solid var(--blue-header);
+            border-bottom: 2px solid #777;
+            text-transform: uppercase;
         }
 
         td {
             padding: 12px 4px;
             text-align: center;
-            border-bottom: 1px solid #4a4a4e;
+            border-bottom: 1px solid var(--table-border);
             font-size: 0.85rem;
         }
 
         .sec-col { font-weight: bold; color: #fff; }
-        .men-col { color: #d0d0d0; font-size: 0.75rem; font-style: italic; }
+        .men-col { color: #bbb; font-size: 0.75rem; }
 
         input[type="number"] {
             width: 45px;
-            background: #1c1c21;
-            border: 1px solid #555;
+            background: #222;
+            border: 1px solid #666;
             color: #fff;
             padding: 5px;
             border-radius: 4px;
-            outline: none;
         }
 
-        /* PCR Highlights */
         .status-badge {
             padding: 8px;
-            border-radius: 5px;
+            border-radius: 4px;
             font-weight: bold;
             display: block;
             width: 90%;
             margin: auto;
-            cursor: pointer;
+            font-size: 0.7rem;
         }
-        .not-sub { background: var(--red); color: white; box-shadow: 0 0 10px rgba(255, 77, 77, 0.5); }
+        .not-sub { background: var(--red); color: white; }
         .sub { background: var(--green); color: black; }
 
         .official-note {
-            background: rgba(255, 77, 77, 0.1);
-            border: 1px solid var(--red);
-            border-radius: 8px;
+            background: rgba(0, 0, 0, 0.2);
+            border-left: 4px solid var(--red);
             padding: 15px;
             margin-top: 10px;
             text-align: center;
-            color: var(--red);
+            color: #ffaaaa;
             font-weight: bold;
-            font-size: 0.95rem;
-            line-height: 1.4;
-            text-transform: uppercase;
+            font-size: 0.85rem;
         }
 
         .total-row {
-            background: rgba(46, 204, 113, 0.1);
+            background: #222;
             color: var(--green);
-            font-weight: 900;
+            font-weight: bold;
         }
 
         .btn-container {
@@ -157,13 +152,12 @@
             flex: 1;
             padding: 15px;
             border: none;
-            border-radius: 10px;
+            border-radius: 8px;
             font-weight: bold;
             cursor: pointer;
             color: white;
-            transition: 0.3s ease;
         }
-        .btn-ss { background: #5a5a5e; } /* Grey Button */
+        .btn-ss { background: #666; }
         .btn-wa { background: #128C7E; }
 
         .hidden { display: none; }
@@ -206,7 +200,7 @@
             </table>
             
             <div class="official-note">
-                ⚠️ NOTICE: All class incharges/mentors are requested to do PCR for your respective section and update report immediately!
+                ⚠️ NOTICE: Update PCR reports immediately for your respective sections!
             </div>
         </div>
 
@@ -230,7 +224,6 @@
     </div>
 
     <script>
-        // ... (All original Javascript remains exactly the same) ...
         const data = [
             { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
             { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
@@ -250,7 +243,7 @@
                     <tr>
                         <td class="sec-col">${c.n}</td>
                         <td>${c.s}</td>
-                        <td><input type="number" class="abs-val" placeholder="-" oninput="calculate()"></td>
+                        <td><input type="number" class="abs-val" placeholder="0" oninput="calculate()"></td>
                         <td id="perc-${i}" style="font-weight:bold;">100%</td>
                         <td class="men-col">${c.m}</td>
                     </tr>
@@ -302,10 +295,9 @@
 
         function takeScreenshot() {
             const area = document.getElementById('reportCapture');
-            // UPDATED: backgroundColor set to grey for screenshot
-            html2canvas(area, { backgroundColor: '#3a3a3c', scale: 2 }).then(canvas => {
+            html2canvas(area, { backgroundColor: '#444444', scale: 2 }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `NA_Block_Report_${Date.now()}.png`;
+                link.download = `Report_${Date.now()}.png`;
                 link.href = canvas.toDataURL();
                 link.click();
             });
@@ -317,16 +309,14 @@
             if(mode === 'attendance') {
                 const inputs = document.querySelectorAll('.abs-val');
                 data.forEach((c, i) => {
-                    msg += `📍 *${c.n}* | Str: ${c.s} | Abs: ${inputs[i].value || 0} | ${document.getElementById(`perc-${i}`).innerText}\n`;
+                    msg += `📍 *${c.n}* | Abs: ${inputs[i].value || 0} | ${document.getElementById(`perc-${i}`).innerText}\n`;
                 });
-                msg += `\n📊 *Total:* ${document.getElementById('grandAbs').innerText} Abs | *${document.getElementById('grandPerc').innerText}*\n`;
+                msg += `\n📊 *Total Abs:* ${document.getElementById('grandAbs').innerText} | *${document.getElementById('grandPerc').innerText}*`;
             } else {
                 data.forEach((c, i) => {
-                    const status = document.getElementById(`st-${i}`).innerText;
-                    msg += `${status === 'SUBMITTED' ? '✅' : '❌'} *${c.n}*: ${status}\n`;
+                    msg += `${document.getElementById(`st-${i}`).innerText === 'SUBMITTED' ? '✅' : '❌'} *${c.n}*\n`;
                 });
             }
-            msg += `\n\n*Designed by GNR*`;
             window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
