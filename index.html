@@ -3,321 +3,270 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>G.N.R - NA Block 1st Year</title>
+    <title>G.N.R Dashboard - NA Block</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/tesseract.js@4/dist/tesseract.min.js"></script>
     <style>
         :root {
-            /* Professional Grey Palette */
-            --bg: #333333;           /* Main page background (Grey) */
-            --card-bg: #444444;      /* Report area background (Lighter Grey) */
-            --heading-white: #ffffff; /* Professional White for heading */
-            --text: #eeeeee;
-            --table-border: #555555;
-            --green: #2ecc71;
-            --orange: #f39c12;
-            --red: #ff4d4d;
+            --bg: #2b2b2b;
+            --card-bg: #353535;
+            --heading-white: #ffffff;
+            --educational-blue: #00e5ff;
+            --educational-purple: #bd93f9;
+            --text: #e0e0e0;
         }
 
         body {
-            font-family: 'Segoe UI', Arial, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
-            padding: 10px;
+            padding: 5px;
+            height: 100vh;
+            overflow: hidden; /* Prevents scrolling */
             display: flex;
             flex-direction: column;
-            align-items: center;
         }
 
-        .controls {
-            width: 95%;
-            max-width: 700px;
-            margin-bottom: 15px;
-        }
-
-        .selector {
-            width: 100%;
-            background: #222;
-            color: white;
-            padding: 12px;
-            border: 1px solid #666;
-            border-radius: 8px;
-            font-weight: bold;
-        }
-
-        /* Report Area */
-        #reportCapture {
-            background: var(--card-bg);
-            padding: 25px;
-            border-radius: 12px;
-            width: 95%;
-            max-width: 700px;
-            border: 1px solid #555;
-            position: relative;
-        }
-
-        .gnr-brand {
-            position: absolute;
-            top: 10px;
-            right: 15px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            color: #888;
-        }
-
-        /* THE SPECIFIC WHITE HEADING */
+        /* Compact Header */
         .header-title {
             text-align: center;
-            color: var(--heading-white); 
-            font-size: 1.5rem;
-            font-weight: 700;
+            color: var(--heading-white);
+            font-size: 1.2rem;
+            margin: 5px 0;
             text-transform: uppercase;
-            margin: 15px 0 25px 0;
-            letter-spacing: 1px;
-            text-shadow: none; /* Removed the blue glow for professionalism */
+            font-weight: 800;
         }
+
+        .main-container {
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 10px;
+            flex: 1;
+            padding: 5px;
+            max-height: 85vh;
+        }
+
+        #reportCapture {
+            background: var(--card-bg);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #444;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Professional Colored Fonts */
+        .sec-col { color: var(--educational-blue); font-weight: bold; }
+        .total-col { color: #f8f8f2; }
+        .men-col { color: var(--educational-purple); font-size: 0.7rem; }
 
         table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 20px;
+            font-size: 0.75rem;
         }
 
         th {
-            background: #555555;
-            color: #ffffff;
-            padding: 12px 5px;
-            font-size: 0.75rem;
-            border-bottom: 2px solid #777;
-            text-transform: uppercase;
+            background: #444;
+            color: #fff;
+            padding: 8px;
+            border-bottom: 2px solid #555;
         }
 
         td {
-            padding: 12px 4px;
+            padding: 6px 4px;
             text-align: center;
-            border-bottom: 1px solid var(--table-border);
-            font-size: 0.85rem;
+            border-bottom: 1px solid #444;
         }
 
-        .sec-col { font-weight: bold; color: #fff; }
-        .men-col { color: #bbb; font-size: 0.75rem; }
-
-        input[type="number"] {
-            width: 45px;
-            background: #222;
-            border: 1px solid #666;
-            color: #fff;
-            padding: 5px;
-            border-radius: 4px;
-        }
-
-        .status-badge {
-            padding: 8px;
-            border-radius: 4px;
+        .abs-input {
+            width: 35px;
+            background: #111;
+            border: 1px solid #555;
+            color: #ff5555;
+            text-align: center;
             font-weight: bold;
-            display: block;
-            width: 90%;
-            margin: auto;
-            font-size: 0.7rem;
         }
-        .not-sub { background: var(--red); color: white; }
-        .sub { background: var(--green); color: black; }
+
+        .chart-container {
+            background: #333;
+            border-radius: 8px;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .controls-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #333;
+            padding: 5px 15px;
+            border-radius: 5px;
+            margin-bottom: 5px;
+        }
 
         .official-note {
-            background: rgba(0, 0, 0, 0.2);
-            border-left: 4px solid var(--red);
-            padding: 15px;
-            margin-top: 10px;
-            text-align: center;
+            background: rgba(255, 85, 85, 0.1);
+            border-left: 3px solid #ff5555;
+            padding: 8px;
+            font-size: 0.7rem;
             color: #ffaaaa;
-            font-weight: bold;
-            font-size: 0.85rem;
+            margin-top: 5px;
         }
 
-        .total-row {
-            background: #222;
-            color: var(--green);
-            font-weight: bold;
-        }
-
-        .btn-container {
-            display: flex;
-            gap: 12px;
-            width: 95%;
-            max-width: 700px;
-            margin-top: 20px;
-        }
-
-        .action-btn {
-            flex: 1;
-            padding: 15px;
+        .btn {
+            padding: 8px 12px;
             border: none;
-            border-radius: 8px;
-            font-weight: bold;
+            border-radius: 4px;
             cursor: pointer;
-            color: white;
+            font-weight: bold;
+            font-size: 0.7rem;
         }
-        .btn-ss { background: #666; }
-        .btn-wa { background: #128C7E; }
-
-        .hidden { display: none; }
+        .btn-upload { background: #6272a4; color: white; }
+        .btn-ss { background: #50fa7b; color: #282a36; }
     </style>
 </head>
 <body>
 
-    <div class="controls">
-        <select class="selector" id="mode" onchange="toggleView()">
-            <option value="attendance">📋 ATTENDANCE REPORT VIEW</option>
-            <option value="pcr">📑 PCR SUBMISSION STATUS VIEW</option>
-        </select>
+    <h2 class="header-title">NA Block 1st Year Attendance Report</h2>
+
+    <div class="controls-row">
+        <div>
+            <label style="font-size: 0.7rem;">Auto-Scan Image: </label>
+            <input type="file" id="imageUpload" accept="image/*" class="btn btn-upload">
+        </div>
+        <button class="btn btn-ss" onclick="takeScreenshot()">Download Report</button>
     </div>
 
-    <div id="reportCapture">
-        <div class="gnr-brand">DESIGNED BY GNR</div>
-        <h2 class="header-title" id="mainTitle">Na Block 1st year attendance report</h2>
-
-        <div id="attendanceArea">
+    <div class="main-container">
+        <div id="reportCapture">
             <table>
                 <thead>
                     <tr>
                         <th>SECTION</th>
-                        <th>TOTAL</th>
+                        <th>STRENGTH</th>
                         <th>ABSENT</th>
                         <th>%</th>
-                        <th>MENTOR NAMES</th>
+                        <th>MENTOR</th>
                     </tr>
                 </thead>
-                <tbody id="attBody"></tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td>TOTAL</td>
-                        <td id="grandTotal">492</td>
-                        <td id="grandAbs">0</td>
-                        <td id="grandPerc">100%</td>
-                        <td>-</td>
-                    </tr>
-                </tfoot>
+                <tbody id="tableBody"></tbody>
+                <tr style="background:#222; font-weight: bold;">
+                    <td>TOTAL</td>
+                    <td id="gStr">492</td>
+                    <td id="gAbs" style="color:#ff5555;">0</td>
+                    <td id="gPerc" style="color:#50fa7b;">100%</td>
+                    <td>-</td>
+                </tr>
             </table>
-            
+
             <div class="official-note">
-                ⚠️ NOTICE: Update PCR reports immediately for your respective sections!
+                ⚠️ OFFICIAL: Mentors must verify and submit the above PCR attendance immediately. 
             </div>
         </div>
 
-        <div id="pcrArea" class="hidden">
-            <table>
-                <thead>
-                    <tr>
-                        <th>SECTION</th>
-                        <th>MENTOR NAME</th>
-                        <th>PCR STATUS</th>
-                    </tr>
-                </thead>
-                <tbody id="pcrBody"></tbody>
-            </table>
+        <div class="chart-container">
+            <canvas id="attendanceChart"></canvas>
         </div>
-    </div>
-
-    <div class="btn-container">
-        <button class="action-btn btn-ss" onclick="takeScreenshot()">Capture Report</button>
-        <button class="action-btn btn-wa" onclick="shareWA()">WhatsApp Report</button>
     </div>
 
     <script>
         const data = [
-            { n: "CSE-C", s: 60, m: "Mr.Yogesh/Ms.Anusuya" },
-            { n: "CSE-D", s: 62, m: "Dr.Adrish/Mr.Govind rao" },
-            { n: "CSE-E", s: 58, m: "Ms.Sukanya/Mr.Pradeep" },
-            { n: "CSM-A", s: 63, m: "Ms.Shivani/Ms.K.Shivani" },
-            { n: "IT-A", s: 49, m: "Ms.Alpana Singh/Mr.Sujith" },
-            { n: "ECE-A", s: 69, m: "Ms.Sumayyah/Mr.Sainath" },
-            { n: "ECE-B", s: 69, m: "Mr.Muzammil/Ms.Anusha" },
-            { n: "DS", s: 62, m: "Dr.Subhasish/Ms.Jayanthi" }
+            { n: "CSE-C", s: 60, m: "Yogesh/Anusuya" },
+            { n: "CSE-D", s: 62, m: "Adrish/Govind" },
+            { n: "CSE-E", s: 58, m: "Sukanya/Pradeep" },
+            { n: "CSM-A", s: 63, m: "Shivani/K.Shivani" },
+            { n: "IT-A", s: 49, m: "Alpana/Sujith" },
+            { n: "ECE-A", s: 69, m: "Sumayyah/Sainath" },
+            { n: "ECE-B", s: 69, m: "Muzammil/Anusha" },
+            { n: "DS", s: 62, m: "Subhasish/Jayanthi" }
         ];
 
+        let chart;
+
         function init() {
-            const ab = document.getElementById('attBody');
-            const pb = document.getElementById('pcrBody');
+            const body = document.getElementById('tableBody');
             data.forEach((c, i) => {
-                ab.innerHTML += `
+                body.innerHTML += `
                     <tr>
                         <td class="sec-col">${c.n}</td>
-                        <td>${c.s}</td>
-                        <td><input type="number" class="abs-val" placeholder="0" oninput="calculate()"></td>
-                        <td id="perc-${i}" style="font-weight:bold;">100%</td>
+                        <td class="total-col">${c.s}</td>
+                        <td><input type="number" class="abs-input" id="abs-${i}" value="0" oninput="update()"></td>
+                        <td id="p-${i}" style="font-weight:bold;">100%</td>
                         <td class="men-col">${c.m}</td>
-                    </tr>
-                `;
-                pb.innerHTML += `
-                    <tr>
-                        <td class="sec-col">${c.n}</td>
-                        <td class="men-col">${c.m}</td>
-                        <td><span id="st-${i}" class="status-badge not-sub" onclick="toggleStatus(${i})">NOT SUBMITTED</span></td>
                     </tr>
                 `;
             });
-            calculate();
+            setupChart();
+            update();
         }
 
-        function calculate() {
-            const inputs = document.querySelectorAll('.abs-val');
+        function update() {
             let tS = 0, tA = 0;
+            const percentages = [];
             data.forEach((c, i) => {
-                let a = parseInt(inputs[i].value) || 0;
+                let a = parseInt(document.getElementById(`abs-${i}`).value) || 0;
                 let p = ((c.s - a) / c.s) * 100;
-                let pEl = document.getElementById(`perc-${i}`);
-                pEl.innerText = p.toFixed(1) + "%";
-                pEl.style.color = p > 75 ? "var(--green)" : (p >= 60 ? "var(--orange)" : "var(--red)");
+                document.getElementById(`p-${i}`).innerText = p.toFixed(1) + "%";
                 tS += c.s; tA += a;
+                percentages.push(p.toFixed(1));
             });
-            document.getElementById('grandAbs').innerText = tA;
-            document.getElementById('grandPerc').innerText = (((tS - tA) / tS) * 100).toFixed(2) + "%";
+            document.getElementById('gAbs').innerText = tA;
+            document.getElementById('gPerc').innerText = (((tS - tA) / tS) * 100).toFixed(1) + "%";
+            chart.data.datasets[0].data = percentages;
+            chart.update();
         }
 
-        function toggleStatus(i) {
-            const el = document.getElementById(`st-${i}`);
-            if(el.classList.contains('not-sub')) {
-                el.classList.replace('not-sub', 'sub');
-                el.innerText = "SUBMITTED";
-            } else {
-                el.classList.replace('sub', 'not-sub');
-                el.innerText = "NOT SUBMITTED";
-            }
+        function setupChart() {
+            const ctx = document.getElementById('attendanceChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: data.map(d => d.n),
+                    datasets: [{
+                        label: 'Attendance %',
+                        data: Array(8).fill(100),
+                        backgroundColor: '#00e5ff'
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: { x: { min: 0, max: 100, ticks: { color: '#fff' } }, y: { ticks: { color: '#fff' } } }
+                }
+            });
         }
 
-        function toggleView() {
-            const mode = document.getElementById('mode').value;
-            const isAtt = mode === 'attendance';
-            document.getElementById('attendanceArea').classList.toggle('hidden', !isAtt);
-            document.getElementById('pcrArea').classList.toggle('hidden', isAtt);
-            document.getElementById('mainTitle').innerText = isAtt ? "Na Block 1st year attendance report" : "Na Block 1st year PCR status report";
-        }
+        // IMAGE OCR LOGIC
+        document.getElementById('imageUpload').addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            Tesseract.recognize(file, 'eng').then(({ data: { text } }) => {
+                data.forEach((c, i) => {
+                    // Regex looks for "SectionName" followed by a number in brackets, e.g., "CSE-C (5)" or "CSE-C 5"
+                    const regex = new RegExp(`${c.n}.*?\\(?(\\d+)\\)?`, 'i');
+                    const match = text.match(regex);
+                    if (match) {
+                        document.getElementById(`abs-${i}`).value = match[1];
+                    }
+                });
+                update();
+            });
+        });
 
         function takeScreenshot() {
-            const area = document.getElementById('reportCapture');
-            html2canvas(area, { backgroundColor: '#444444', scale: 2 }).then(canvas => {
+            html2canvas(document.body, { backgroundColor: '#2b2b2b' }).then(canvas => {
                 const link = document.createElement('a');
-                link.download = `Report_${Date.now()}.png`;
+                link.download = 'NA_Block_SinglePage_Report.png';
                 link.href = canvas.toDataURL();
                 link.click();
             });
-        }
-
-        function shareWA() {
-            const mode = document.getElementById('mode').value;
-            let msg = `*${document.getElementById('mainTitle').innerText.toUpperCase()}*\n\n`;
-            if(mode === 'attendance') {
-                const inputs = document.querySelectorAll('.abs-val');
-                data.forEach((c, i) => {
-                    msg += `📍 *${c.n}* | Abs: ${inputs[i].value || 0} | ${document.getElementById(`perc-${i}`).innerText}\n`;
-                });
-                msg += `\n📊 *Total Abs:* ${document.getElementById('grandAbs').innerText} | *${document.getElementById('grandPerc').innerText}*`;
-            } else {
-                data.forEach((c, i) => {
-                    msg += `${document.getElementById(`st-${i}`).innerText === 'SUBMITTED' ? '✅' : '❌'} *${c.n}*\n`;
-                });
-            }
-            window.open(`https://wa.me/?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
         init();
